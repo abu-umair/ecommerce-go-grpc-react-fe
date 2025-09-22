@@ -7,7 +7,9 @@ interface FormInputProps<T extends Record<string, any>> { //?perlu di extend hin
     placeholder?: string //?tidak wajib, (bisa dibuat optional)
     register: UseFormRegister<T>; //?membuat generik 
 }
-const FormInput = (props: FormInputProps) => {
+
+// eslint-disable-next-line
+function FormInput<T extends Record<string, any>>(props: FormInputProps<T>) {
     return (
         <div className="form-group mb-4">
             <input type={props.type} className={`form-control ${form.formState.errors.email ? 'is-invalid' : ''}`} placeholder={props.placeholder} {...form.register('email')} />
