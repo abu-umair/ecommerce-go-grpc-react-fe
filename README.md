@@ -38,3 +38,19 @@ npm run dev
 ### Integrasi API Login FE
 #### History Steps
 1. Copas folder proto dari BE ke FE
+
+2. install dependencies, beberapa sudah diinstall
+a. @protobuf-ts/runtime
+b. @protobuf-ts/runtime-rpc
+c. @protobuf-ts/plugin
+d. @protobuf-ts/grpcweb-transport
+
+masukkan di terminal:
+```bash
+npm i @protobuf-ts/runtime @protobuf-ts/runtime-rpc @protobuf-ts/grpcweb-transport
+```
+
+kemudian
+```bash
+npm i -D @protobuf-ts/plugin
+```
