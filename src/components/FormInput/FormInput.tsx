@@ -1,10 +1,11 @@
 import React from 'react'
 import { UseFormRegister } from 'react-hook-form'
 
-interface FormInputProps {
+// eslint-disable-next-line
+interface FormInputProps<T extends Record<string, any>> { //?perlu di extend hingga menjadi Record 
     type: "text" | "password" //? type nya bisa text atau password
     placeholder?: string //?tidak wajib, (bisa dibuat optional)
-    register: UseFormRegister; //?membuat generik
+    register: UseFormRegister<T>; //?membuat generik 
 }
 const FormInput = (props: FormInputProps) => {
     return (
