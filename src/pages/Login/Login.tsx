@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 import Swal from 'sweetalert2';
 import { yupResolver } from "@hookform/resolvers/yup";
+import FormInput from '../../components/FormInput/FormInput';
 
 const loginSchema = Yup.object().shape({
     email: Yup.string().email('Invalid email').required('Email is required'),
@@ -33,10 +34,13 @@ const Login = () => {
                         <div className="login-wrap p-4">
                             <h2 className="section-title text-center mb-5">Masuk</h2>
                             <form onSubmit={form.handleSubmit(submitHandler)} action="#" className="login-form">
-                                <div className="form-group mb-4">
-                                    <input type="text" className={`form-control ${form.formState.errors.email ? 'is-invalid' : ''}`} placeholder="Alamat Email" {...form.register('email')} />
-                                    <div className={`text-danger ${form.formState.errors.email ? '' : 'hidden'}`} style={{ height: 8 }}>{form.formState.errors.email?.message ?? ''}</div>
-                                </div>
+                                <FormInput<LoginFormValues>
+                                    errors={form.formState.errors}
+                                    name="email"
+                                    register={form.register}
+                                    type="text"
+                                    placeholder="Alamat email"
+                                />
                                 <div className="form-group mb-4">
                                     <input type="password" className={`form-control ${form.formState.errors.password ? 'is-invalid' : ''}`} placeholder="Kata sandi" {...form.register('password')} />
                                     <div className={`text-danger ${form.formState.errors.password ? '' : 'hidden'}`} style={{ height: 8 }}>{form.formState.errors.password?.message ?? ''}</div>
