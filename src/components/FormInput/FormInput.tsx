@@ -1,8 +1,10 @@
 import React from 'react'
+import { UseFormRegister } from 'react-hook-form'
 
 interface FormInputProps {
     type: "text" | "password" //? type nya bisa text atau password
     placeholder?: string //?tidak wajib, (bisa dibuat optional)
+    register: UseFormRegister; //?membuat generik
 }
 const FormInput = (props: FormInputProps) => {
     return (
