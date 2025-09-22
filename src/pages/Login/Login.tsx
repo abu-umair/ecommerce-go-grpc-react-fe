@@ -41,10 +41,14 @@ const Login = () => {
                                     type="text"
                                     placeholder="Alamat email"
                                 />
-                                <div className="form-group mb-4">
-                                    <input type="password" className={`form-control ${form.formState.errors.password ? 'is-invalid' : ''}`} placeholder="Kata sandi" {...form.register('password')} />
-                                    <div className={`text-danger ${form.formState.errors.password ? '' : 'hidden'}`} style={{ height: 8 }}>{form.formState.errors.password?.message ?? ''}</div>
-                                </div>
+                                <FormInput<LoginFormValues>
+                                    errors={form.formState.errors}
+                                    name="password"
+                                    register={form.register}
+                                    type="password"
+                                    placeholder="Kata sandi"
+                                />
+                                
                                 <div className="form-group">
                                     <button type="submit" className="btn btn-primary btn-block">Masuk</button>
                                 </div>
