@@ -1,13 +1,17 @@
 import { GrpcWebFetchTransport } from "@protobuf-ts/grpcweb-transport";
-import { AuthServiceClient } from "../../../pb/auth/auth.client";
+import { AuthServiceClient, IAuthServiceClient } from "../../../pb/auth/auth.client";
 
+let webTransport: GrpcWebFetchTransport | null = null;
+let authClient: IAuthServiceClient | null = null;
 
 const getWebTransport = () => {
-    const transport = new GrpcWebFetchTransport({
-        baseUrl: 'http://localhost:8080',
-    })
+    if (webTransport === null) {
+        webTransport = new GrpcWebFetchTransport({
+            baseUrl: 'http://localhost:8080',
+        })
+    }
 
-    return transport
+    return webTransport
 }
 
 export const getAuthClient = () => {
