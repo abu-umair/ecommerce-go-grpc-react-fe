@@ -50,7 +50,13 @@ masukkan di terminal:
 npm i @protobuf-ts/runtime @protobuf-ts/runtime-rpc @protobuf-ts/grpcweb-transport
 ```
 
-kemudian
+kemudian generate protonya
 ```bash
 npm i -D @protobuf-ts/plugin
 ```
+
+3  generate protonya lagi yang mengarah ke folder pb
+```bash
+npx protoc --ts_out ./pb --proto_path ./proto auth/auth.proto
+```
+
