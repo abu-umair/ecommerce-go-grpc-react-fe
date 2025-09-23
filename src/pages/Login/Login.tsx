@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 import Swal from 'sweetalert2';
@@ -18,6 +18,8 @@ interface LoginFormValues {
     password: string;
 }
 const Login = () => {
+    const navigate = useNavigate();
+
     const form = useForm<LoginFormValues>({
         resolver: yupResolver(loginSchema),
     })
@@ -49,6 +51,8 @@ const Login = () => {
 
             localStorage.setItem('access_token', res.response.accessToken);
 
+            navigate('/');
+            
             Swal.fire({
                 icon: 'success',
                 title: 'Login successfully',
