@@ -60,3 +60,8 @@ npm i -D @protobuf-ts/plugin
 npx protoc --ts_out ./pb --proto_path ./proto auth/auth.proto
 ```
 
+4  generate common/base_response
+```bash
+npx protoc --ts_out ./pb --proto_path ./proto common/base_response.proto
+```
+
