@@ -27,11 +27,7 @@ const Login = () => {
         try {
             console.log(values);
             //? membuat channel integrasi
-            const transport = new GrpcWebFetchTransport({
-                baseUrl: 'http://localhost:8080',
-            })
-
-            const client = new AuthServiceClient(transport);
+            
 
             const res = await client.login({
                 email: values.email,
