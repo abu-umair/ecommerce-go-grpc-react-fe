@@ -6,6 +6,9 @@ function Navbar() {
 
     const { pathname } = useLocation();
 
+    const cartUrl = isLoggedIn ? '/cart' : '/login';
+    const profileUrl = isLoggedIn ? '/profile' : '/login';
+
     return (
         <nav className="custom-navbar navbar navbar navbar-expand-md navbar-dark bg-dark" aria-label="Furni navigation bar">
             <div className="container">
@@ -39,8 +42,8 @@ function Navbar() {
                     </ul>
 
                     <ul className="custom-navbar-cta navbar-nav mb-2 mb-md-0 ms-5">
-                        <li className="margin-right"><Link className="nav-link" to="/cart"><img src="/images/cart.svg" alt="Cart" /></Link></li>
-                        <li className="margin-right"><Link className="nav-link" to="/login"><img src="/images/user.svg" alt="User" /></Link></li>
+                        <li className="margin-right"><Link className="nav-link" to={cartUrl}><img src="/images/cart.svg" alt="Cart" /></Link></li>
+                        <li className="margin-right"><Link className="nav-link" to={profileUrl}><img src="/images/user.svg" alt="User" /></Link></li>
                         {/* akan muncul jika user sudah login */}
                         {isLoggedIn &&
                             <li><Link className="nav-link" to="#"><img src="/images/sign-out.svg" alt="User" /></Link></li>
