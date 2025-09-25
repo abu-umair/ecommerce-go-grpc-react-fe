@@ -4,9 +4,8 @@ import * as Yup from 'yup';
 import Swal from 'sweetalert2';
 import { yupResolver } from "@hookform/resolvers/yup";
 import FormInput from '../../components/FormInput/FormInput';
-import { GrpcWebFetchTransport } from '@protobuf-ts/grpcweb-transport';
-import { AuthServiceClient } from './../../../pb/auth/auth.client';
 import { RpcError } from '@protobuf-ts/runtime-rpc';
+import { getAuthClient } from '../../api/grpc/client';
 
 const loginSchema = Yup.object().shape({
     email: Yup.string().email('Invalid email').required('Email is required'),
@@ -27,8 +26,8 @@ const Login = () => {
         try {
             console.log(values);
             //? membuat channel integrasi
-            
 
+            const client = getAuthClient();
             const res = await client.login({
                 email: values.email,
                 password: values.password
@@ -48,7 +47,7 @@ const Login = () => {
             localStorage.setItem('access_token', res.response.accessToken);
 
             navigate('/');
-            
+
             Swal.fire({
                 icon: 'success',
                 title: 'Login successfully',
