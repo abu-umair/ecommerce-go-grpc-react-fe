@@ -6,6 +6,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import FormInput from '../../components/FormInput/FormInput';
 import { RpcError } from '@protobuf-ts/runtime-rpc';
 import { getAuthClient } from '../../api/grpc/client';
+import { useAuthStore } from '../../store/auth';
 
 const loginSchema = Yup.object().shape({
     email: Yup.string().email('Invalid email').required('Email is required'),
@@ -18,6 +19,7 @@ interface LoginFormValues {
 }
 const Login = () => {
     const navigate = useNavigate();
+    const loginUser = useAuthStore(state => state.login);
 
     const form = useForm<LoginFormValues>({
         resolver: yupResolver(loginSchema),
@@ -45,6 +47,8 @@ const Login = () => {
             console.log(res.response.accessToken);
 
             localStorage.setItem('access_token', res.response.accessToken);
+
+            loginUser();
 
             navigate('/');
 
