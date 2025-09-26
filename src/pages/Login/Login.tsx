@@ -48,15 +48,21 @@ const Login = () => {
 
             localStorage.setItem('access_token', res.response.accessToken);
 
-            loginUser();
+            loginUser(res.response.accessToken);
 
-            navigate('/');
 
             Swal.fire({
                 icon: 'success',
                 title: 'Login successfully',
                 confirmButtonText: 'Ok'
             });
+
+            //?navigate admin dan user
+            if (useAuthStore.getState().role === 'admin') {
+                navigate('/admin/dashboard');
+            } else {
+                navigate('/');
+            }
         } catch (e) {
 
             if (e instanceof RpcError) {

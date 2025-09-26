@@ -98,7 +98,7 @@ function App() {
                 const accessToken = localStorage.getItem('access_token');
                 if (accessToken) {
                     await getAuthClient().getProfile({});
-                    loginUser();
+                    loginUser(accessToken);
                 }
 
             } finally {

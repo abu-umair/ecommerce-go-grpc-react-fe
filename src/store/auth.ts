@@ -1,16 +1,39 @@
+import { jwtDecode } from "jwt-decode";
 import { create } from "zustand";
+import { Timestamp } from "../../pb/google/protobuf/timestamp";
+
+interface JwtPayload {
+    sub: string;
+    full_name: string;
+    email: string;
+    role: string;
+    member_since: Timestamp;
+}
 
 interface AuthStoreState {
     isLoggedIn: boolean;
-    login: () => void;
+    jwtPayload: JwtPayload | null;
+    role: "customer" | "admin";
+    login: (token: string) => void;
 }
 
 export const useAuthStore = create<AuthStoreState>((set) => ({
     isLoggedIn: false,
-    login: () => set(state => {
-        return {
-            ...state,
-            isLoggedIn: true,
+    jwtPayload: null,
+    role: "customer",
+    login: (token: string) => set(state => {
+        try {
+            const claims = jwtDecode<JwtPayload>(token);
+            return {
+                ...state,
+                jwtPayload: claims,
+                isLoggedIn: true,
+                role: claims.role === "admin" ? "admin" : "customer"
+
+            }
+
+        } catch {
+            return { ...state } //? return state apa adanya
         }
     })
 }));
