@@ -1,13 +1,38 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../store/auth';
+import { getAuthClient } from '../../api/grpc/client';
+import Swal from 'sweetalert2';
 
 function Navbar() {
+    const navigate = useNavigate();
     const isLoggedIn = useAuthStore(state => state.isLoggedIn);
+    const logout = useAuthStore(state => state.logout);
 
     const { pathname } = useLocation();
 
     const cartUrl = isLoggedIn ? '/cart' : '/login';
     const profileUrl = isLoggedIn ? '/profile' : '/login';
+
+    const logoutHandler = async () => {
+        console.log('Logout clicked');
+
+        const result = await Swal.fire({
+            title: 'Login successfully',
+            showCancelButton: true,
+            cancelButtonText: 'No',
+            confirmButtonText: 'Yes'
+        });
+
+        if (result.isConfirmed) {
+            const res = await getAuthClient().logout({});
+
+            if (!res.response.base?.isError) {
+                logout();
+                localStorage.removeItem('access_token');
+                navigate('/');
+            }
+        }
+    }
 
     return (
         <nav className="custom-navbar navbar navbar navbar-expand-md navbar-dark bg-dark" aria-label="Furni navigation bar">
@@ -46,7 +71,7 @@ function Navbar() {
                         <li className="margin-right"><Link className="nav-link" to={profileUrl}><img src="/images/user.svg" alt="User" /></Link></li>
                         {/* akan muncul jika user sudah login */}
                         {isLoggedIn &&
-                            <li><Link className="nav-link" to="#"><img src="/images/sign-out.svg" alt="User" /></Link></li>
+                            <li><Link className="nav-link" onClick={logoutHandler} to="#"><img src="/images/sign-out.svg" alt="User" /></Link></li>
                         }
                     </ul>
                 </div>
