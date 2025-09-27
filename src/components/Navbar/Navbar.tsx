@@ -71,12 +71,18 @@ function Navbar() {
                         <li className="margin-right"><Link className="nav-link" to={profileUrl}><img src="/images/user.svg" alt="User" /></Link></li>
                         {/* akan muncul jika user sudah login */}
                         {isLoggedIn &&
-                            <li><Link className="nav-link" onClick={logoutHandler} to="#"><img src="/images/sign-out.svg" alt="User" /></Link></li>
+                            <li onClick={logoutHandler}>
+                                <button
+                                    className="nav-link border-0 bg-transparent">
+
+                                    <img src="/images/sign-out.svg" alt="User" />
+                                </button>
+                            </li>
                         }
                     </ul>
                 </div>
             </div>
-        </nav>
+        </nav >
     )
 }
 
