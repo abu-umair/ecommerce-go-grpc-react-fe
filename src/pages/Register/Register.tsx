@@ -1,6 +1,15 @@
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 import FormInput from '../../components/FormInput/FormInput';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+
+const registerSchema = yup.object().shape({
+    full_name: yup.string().required('Nama lengkap wajib diisi'),
+    email: yup.string().email('Alamat email tidak valid').required('Alamat email wajib diisi'),
+    password: yup.string().required('Kata sandi wajib diisi').min(6, 'Kata sandi minimal 6 karakter'),
+    password_confirmation: yup.string().required('Konfirmasi kata sandi wajib diisi').oneOf([yup.ref('password')], 'Konfirmasi kata sandi tidak cocok'),
+})
 
 interface RegisterFormValues {
     full_name: string;
@@ -9,7 +18,9 @@ interface RegisterFormValues {
     password_confirmation: string;
 }
 const Register = () => {
-    const form = useForm<RegisterFormValues>();
+    const form = useForm<RegisterFormValues>({
+        resolver: yupResolver(registerSchema),
+    });
 
     const submitHandler = (values: RegisterFormValues) => {
         console.log(values);
