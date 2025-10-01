@@ -36,10 +36,20 @@ const Register = () => {
             passwordConfirmation: values.password_confirmation,
         });
 
-        console.log(res);
+        console.log(res);//? melihat error untuk di cek dan divalidasi
 
 
         if (res.response.base?.isError ?? true) {
+            if (res.response.base?.message === "User already exist") {
+                Swal.fire({
+                    title: 'Register gagal',
+                    text: "Email sudah terdaftar",
+                    icon: 'error',
+                })
+                return
+
+            }
+
             Swal.fire({
                 title: 'Terjadi kesalahan',
                 text: 'Mohon coba beberapa saat lagi',
