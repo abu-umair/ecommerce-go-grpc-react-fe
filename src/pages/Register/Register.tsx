@@ -48,7 +48,7 @@ const Register = () => {
                                     placeholder='konfirmasi kata sandi'
                                 />
 
-                                <div className="form-group mb-4">
+                                {/* <div className="form-group mb-4">
                                     <input type="text" className="form-control" placeholder="Nama Lengkap" required />
                                 </div>
                                 <div className="form-group mb-4">
@@ -59,7 +59,7 @@ const Register = () => {
                                 </div>
                                 <div className="form-group mb-4">
                                     <input type="password" className="form-control" placeholder="Konfirmasi Kata Sandi" required />
-                                </div>
+                                </div> */}
                                 <div className="form-group">
                                     <button type="submit" className="btn btn-primary btn-block">Buat Akun</button>
                                 </div>
