@@ -5,6 +5,7 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { getAuthClient } from '../../api/grpc/client';
 import Swal from 'sweetalert2';
+import { useState } from 'react';
 
 const registerSchema = yup.object().shape({
     full_name: yup.string().required('Nama lengkap wajib diisi'),
@@ -21,50 +22,57 @@ interface RegisterFormValues {
 }
 const Register = () => {
     const navigate = useNavigate();
-
+    const [submitLoading, setSubmitLoading] = useState<boolean>(false)
     const form = useForm<RegisterFormValues>({
         resolver: yupResolver(registerSchema),
     });
 
     const submitHandler = async (values: RegisterFormValues) => {
-        console.log(values);
+        try {
 
-        const res = await getAuthClient().register({ //?memanggil API
-            email: values.email,
-            fullName: values.full_name,
-            password: values.password,
-            passwordConfirmation: values.password_confirmation,
-        });
+            console.log(values);
+            setSubmitLoading(false)
 
-        console.log(res);//? melihat error untuk di cek dan divalidasi
+            const res = await getAuthClient().register({ //?memanggil API
+                email: values.email,
+                fullName: values.full_name,
+                password: values.password,
+                passwordConfirmation: values.password_confirmation,
+            });
+
+            console.log(res);//? melihat error untuk di cek dan divalidasi error spesifik
 
 
-        if (res.response.base?.isError ?? true) {
-            if (res.response.base?.message === "User already exist") {
+            if (res.response.base?.isError ?? true) {
+                if (res.response.base?.message === "User already exist") {
+                    Swal.fire({
+                        title: 'Register gagal',
+                        text: "Email sudah terdaftar",
+                        icon: 'error',
+                    })
+                    return
+
+                }
+
                 Swal.fire({
-                    title: 'Register gagal',
-                    text: "Email sudah terdaftar",
+                    title: 'Terjadi kesalahan',
+                    text: 'Mohon coba beberapa saat lagi',
                     icon: 'error',
                 })
                 return
-
             }
 
             Swal.fire({
-                title: 'Terjadi kesalahan',
-                text: 'Mohon coba beberapa saat lagi',
-                icon: 'error',
+                title: 'Registrasi Berhasil',
+                text: 'Silakan masuk menggunakan akun baru anda',
+                icon: 'success',
             })
-            return
+
+            navigate('/login')
+        } finally {
+            setSubmitLoading(false)
         }
 
-        Swal.fire({
-            title: 'Registrasi Berhasil',
-            text: 'Silakan masuk menggunakan akun baru anda',
-            icon: 'success',
-        })
-
-        navigate('/login')
     }
 
     return (
@@ -81,6 +89,7 @@ const Register = () => {
                                     register={form.register}
                                     type='text'
                                     placeholder='Nama Lengkap'
+                                    disabled={submitLoading}
                                 />
                                 <FormInput<RegisterFormValues>
                                     errors={form.formState.errors}
@@ -88,6 +97,8 @@ const Register = () => {
                                     register={form.register}
                                     type='text'
                                     placeholder='Alamat email'
+                                    disabled={submitLoading}
+
                                 />
                                 <FormInput<RegisterFormValues>
                                     errors={form.formState.errors}
@@ -95,6 +106,8 @@ const Register = () => {
                                     register={form.register}
                                     type='password'
                                     placeholder='kata sandi'
+                                    disabled={submitLoading}
+
                                 />
                                 <FormInput<RegisterFormValues>
                                     errors={form.formState.errors}
@@ -102,6 +115,8 @@ const Register = () => {
                                     register={form.register}
                                     type='password'
                                     placeholder='konfirmasi kata sandi'
+                                    disabled={submitLoading}
+
                                 />
 
                                 {/* <div className="form-group mb-4">
@@ -117,7 +132,7 @@ const Register = () => {
                                     <input type="password" className="form-control" placeholder="Konfirmasi Kata Sandi" required />
                                 </div> */}
                                 <div className="form-group">
-                                    <button type="submit" className="btn btn-primary btn-block">Buat Akun</button>
+                                    <button type="submit" className="btn btn-primary btn-block" disabled={submitLoading}>Buat Akun</button>
                                 </div>
                                 <div className="text-center mt-4">
                                     <p>Sudah punya akun? <Link to="/login" className="text-primary">Masuk di sini</Link></p>
