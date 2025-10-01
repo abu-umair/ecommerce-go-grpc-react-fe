@@ -1,6 +1,15 @@
+import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
 
+interface RegisterFormValues {
+  full_name: string;
+  email: string;
+  password: string;
+  password_confirmation: string;
+}
 const Register = () => {
+    useForm<RegisterFormValues>();
+
     return (
         <div className="login-section">
             <div className="container">
