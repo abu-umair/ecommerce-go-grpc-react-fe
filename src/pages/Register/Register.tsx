@@ -11,6 +11,11 @@ interface RegisterFormValues {
 const Register = () => {
     const form = useForm<RegisterFormValues>();
 
+    const submitHandler = (values: RegisterFormValues) => {
+        console.log(values);
+
+    }
+
     return (
         <div className="login-section">
             <div className="container">
@@ -18,7 +23,7 @@ const Register = () => {
                     <div className="col-md-6 col-lg-5">
                         <div className="login-wrap p-4">
                             <h2 className="section-title text-center mb-5">Daftar</h2>
-                            <form action="#" className="login-form">
+                            <form onSubmit={form.handleSubmit(submitHandler)} action="#" className="login-form">
                                 <FormInput<RegisterFormValues>
                                     errors={form.formState.errors}
                                     name='full_name'
