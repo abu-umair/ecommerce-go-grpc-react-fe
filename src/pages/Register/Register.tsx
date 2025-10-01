@@ -1,8 +1,10 @@
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import FormInput from '../../components/FormInput/FormInput';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { getAuthClient } from '../../api/grpc/client';
+import Swal from 'sweetalert2';
 
 const registerSchema = yup.object().shape({
     full_name: yup.string().required('Nama lengkap wajib diisi'),
@@ -18,13 +20,41 @@ interface RegisterFormValues {
     password_confirmation: string;
 }
 const Register = () => {
+    const navigate = useNavigate();
+
     const form = useForm<RegisterFormValues>({
         resolver: yupResolver(registerSchema),
     });
 
-    const submitHandler = (values: RegisterFormValues) => {
+    const submitHandler = async (values: RegisterFormValues) => {
         console.log(values);
 
+        const res = await getAuthClient().register({ //?memanggil API
+            email: values.email,
+            fullName: values.full_name,
+            password: values.password,
+            passwordConfirmation: values.password_confirmation,
+        });
+
+        console.log(res);
+
+
+        if (res.response.base?.isError ?? true) {
+            Swal.fire({
+                title: 'Terjadi kesalahan',
+                text: 'Mohon coba beberapa saat lagi',
+                icon: 'error',
+            })
+            return
+        }
+
+        Swal.fire({
+            title: 'Registrasi Berhasil',
+            text: 'Silakan masuk menggunakan akun baru anda',
+            icon: 'success',
+        })
+
+        navigate('/login')
     }
 
     return (
