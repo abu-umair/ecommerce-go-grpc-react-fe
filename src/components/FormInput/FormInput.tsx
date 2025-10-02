@@ -9,13 +9,17 @@ interface FormInputProps<T extends Record<string, any>> { //?perlu di extend hin
     name: Path<T>;
     errors: FieldErrors<T>;
     disabled?: boolean;
+    label?: string;
 }
 
 // eslint-disable-next-line
 function FormInput<T extends Record<string, any>>(props: FormInputProps<T>) {
     return (
         <div className="form-group mb-4">
-            <input type={props.type} className={`form-control ${props.errors[props.name] ? 'is-invalid' : ''}`} placeholder={props.placeholder} disabled= {props.disabled} {...props.register(props.name)} />
+            {props.label &&
+                <label className="text-black" htmlFor="props.name">{props.label}</label>
+            }
+            <input type={props.type} className={`form-control ${props.errors[props.name] ? 'is-invalid' : ''}`} id={props.name} placeholder={props.placeholder} disabled={props.disabled} {...props.register(props.name)} />
             <div className={`text-danger ${props.errors[props.name] ? '' : 'hidden'}`} style={{ height: 8 }}>
                 {props.errors[props.name]?.message as string | null ?? ''}
             </div>
