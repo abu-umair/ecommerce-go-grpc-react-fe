@@ -5,6 +5,9 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { getAuthClient } from "../../api/grpc/client";
 import Swal from "sweetalert2";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuthStore } from "../../store/auth";
+import { RpcError } from "@protobuf-ts/runtime-rpc";
 
 const changePasswordSchema = yup.object().shape({
     current_password: yup.string().required('Kata sandi saat ini wajib diisi'),
@@ -19,6 +22,8 @@ interface ChangePasswordFormValues {
 }
 
 function ChangePasswordSection() {
+    const navigate = useNavigate();
+    const logoutUser = useAuthStore(state => state.logout);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const form = useForm<ChangePasswordFormValues>({
         resolver: yupResolver(changePasswordSchema),
@@ -52,8 +57,30 @@ function ChangePasswordSection() {
                 })
                 return
             }
-        } catch (error) {
+        } catch (e) {
+            if (e instanceof RpcError) {
+                console.log(e.code);
 
+                if (e.code === 'UNAUTHENTICATED' || e.code === 'INTERNAL') {
+                    logoutUser();
+                    localStorage.removeItem('access_token');
+
+                    Swal.fire({
+                        title: 'Sesi telah berakhir',
+                        text: 'Silakan login ulang.',
+                        icon: 'warning',
+                    })
+
+                    navigate('/');
+                    return;
+                }
+            }
+
+            Swal.fire({
+                title: 'Terjadi Kesalahan',
+                text: 'Silakan coba beberapa saat lagi.',
+                icon: 'error',
+            })
         } finally {
             setIsLoading(false);
         }
