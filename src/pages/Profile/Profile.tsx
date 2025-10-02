@@ -3,6 +3,7 @@ import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import PlainHeroSection from '../../components/PlainHeroSection/PlainHeroSection';
 import { getAuthClient } from '../../api/grpc/client';
 import Swal from 'sweetalert2';
+import { convertTimestampToDate } from '../../utils/date';
 
 function Profile() {
     const location = useLocation();
@@ -34,16 +35,12 @@ function Profile() {
             setEmail(res.response.email);
 
             //? formatnya timestamp, maka buat seperti 14 agustus 2025
-            if (res.response.memberSince?.seconds) {
-                
-            } else {
-                setMemberSince(''); //?diset null
-            }
+            const dateStr = convertTimestampToDate(res.response.memberSince);
+            setMemberSince(dateStr);
+
         }
 
         fetchProfile();
-
-
     }, [])
 
 
