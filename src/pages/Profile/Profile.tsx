@@ -1,16 +1,56 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import PlainHeroSection from '../../components/PlainHeroSection/PlainHeroSection';
+import { getAuthClient } from '../../api/grpc/client';
+import Swal from 'sweetalert2';
 
 function Profile() {
     const location = useLocation();
     const navigate = useNavigate();
+    const [fullName, setFullName] = useState<string>();
+    const [email, setEmail] = useState<string>();
+    const [memberSince, setMemberSince] = useState<string>();
 
     useEffect(() => {
         if (location.pathname === '/profile') {
             navigate('/profile/change-password');
         }
     }, [navigate, location.pathname]);
+
+    useEffect(() => {
+        const fetchProfile = async () => {
+            const res = await getAuthClient().getProfile({})
+
+            if (res.response.base?.isError ?? true) {
+                Swal.fire({
+                    title: 'Terjadi Kesalahan',
+                    text: 'Silakan coba beberapa saat lagi.',
+                    icon: 'error',
+                })
+                return
+            }
+
+            setFullName(res.response.fullName);
+            setEmail(res.response.email);
+
+            //? formatnya timestamp, maka buat seperti 14 agustus 2025
+            if (res.response.memberSince?.seconds) {
+                const date = new Date(Number(res.response.memberSince?.seconds) * 1000);
+                setMemberSince(date.toLocaleDateString('id-ID', {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                }));
+            } else {
+                setMemberSince(''); //?diset null
+            }
+        }
+
+        fetchProfile();
+
+
+    }, [])
+
 
     return (
         <>
@@ -25,19 +65,19 @@ function Profile() {
                                     <div className="col-md-4">
                                         <div className="form-group">
                                             <label className="text-black">Nama Lengkap</label>
-                                            <div className="form-control-plaintext">John Doe</div>
+                                            <div className="form-control-plaintext">{fullName}</div>
                                         </div>
                                     </div>
                                     <div className="col-md-4">
                                         <div className="form-group">
                                             <label className="text-black">Alamat Email</label>
-                                            <div className="form-control-plaintext">john.doe@example.com</div>
+                                            <div className="form-control-plaintext">{email}</div>
                                         </div>
                                     </div>
                                     <div className="col-md-4">
                                         <div className="form-group">
                                             <label className="text-black">Anggota Sejak</label>
-                                            <div className="form-control-plaintext">15 Januari 2024</div>
+                                            <div className="form-control-plaintext">{memberSince}</div>
                                         </div>
                                     </div>
                                 </div>
