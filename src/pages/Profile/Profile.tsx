@@ -43,17 +43,20 @@ function Profile() {
                 setMemberSince(dateStr);
             } catch (e) {
                 if (e instanceof RpcError) {
-                    if (e.code === 'UNAUTHENTICATED') {
+                    console.log(e.code);
+
+                    if (e.code === 'UNAUTHENTICATED' || e.code === 'INTERNAL') {
                         logoutUser();
                         localStorage.removeItem('access_token');
-
-                        navigate('/');
 
                         Swal.fire({
                             title: 'Sesi telah berakhir',
                             text: 'Silakan login ulang.',
                             icon: 'warning',
                         })
+
+                        navigate('/');
+                        return;
                     }
                 }
 
