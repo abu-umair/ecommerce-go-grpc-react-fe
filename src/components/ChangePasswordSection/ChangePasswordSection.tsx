@@ -4,6 +4,7 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { getAuthClient } from "../../api/grpc/client";
 import Swal from "sweetalert2";
+import { useState } from "react";
 
 const changePasswordSchema = yup.object().shape({
     current_password: yup.string().required('Kata sandi saat ini wajib diisi'),
@@ -18,35 +19,45 @@ interface ChangePasswordFormValues {
 }
 
 function ChangePasswordSection() {
+    const [isLoading, setIsLoading] = useState<boolean>(false);
     const form = useForm<ChangePasswordFormValues>({
         resolver: yupResolver(changePasswordSchema),
     });
 
     const submitHandler = async (values: ChangePasswordFormValues) => {
-        const res = await getAuthClient().changePassword({
-            newPassword: values.new_password,
-            newPasswordConfirmation: values.confirm_new_password,
-            oldPassword: values.current_password
-        });
-        // console.log(res.response.base);
+        try {
+            setIsLoading(true);
 
-        if (res.response.base?.isError ?? true) {
-            if (res.response.base?.message === "Old password is not matched") {
+            const res = await getAuthClient().changePassword({
+                newPassword: values.new_password,
+                newPasswordConfirmation: values.confirm_new_password,
+                oldPassword: values.current_password
+            });
+            // console.log(res.response.base);
+
+            if (res.response.base?.isError ?? true) {
+                if (res.response.base?.message === "Old password is not matched") {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Ganti Password Gagal',
+                        text: 'Kata sandi lama salah.'
+                    });
+                    return
+
+                }
+
                 Swal.fire({
                     icon: 'error',
-                    title: 'Ganti Password Gagal',
-                    text: 'Kata sandi lama salah.'
-                });
+                    title: 'Terjadi Kesalahan',
+                })
                 return
-
             }
+        } catch (error) {
 
-            Swal.fire({
-                icon: 'error',
-                title: 'Terjadi Kesalahan',
-            })
-            return
+        } finally {
+            setIsLoading(false);
         }
+
 
         Swal.fire({
             icon: 'success',
@@ -67,6 +78,7 @@ function ChangePasswordSection() {
                     register={form.register}
                     type="password"
                     label="Kata Sandi Saat Ini"
+                    disabled={isLoading}
                 />
 
                 <FormInput<ChangePasswordFormValues>
@@ -75,6 +87,7 @@ function ChangePasswordSection() {
                     register={form.register}
                     type="password"
                     label="Kata Sandi Baru"
+                    disabled={isLoading}
                 />
 
                 <FormInput<ChangePasswordFormValues>
@@ -83,6 +96,7 @@ function ChangePasswordSection() {
                     register={form.register}
                     type="password"
                     label="Konfirmasi Kata Sandi Baru"
+                    disabled={isLoading}
                 />
 
                 {/* <div className="form-group">
@@ -97,7 +111,7 @@ function ChangePasswordSection() {
                     <label className="text-black" htmlFor="confirm_password">Konfirmasi Kata Sandi Baru</label>
                     <input type="password" className="form-control" id="confirm_password" />
                 </div> */}
-                <button type="submit" className="btn btn-primary">Perbarui Kata Sandi</button>
+                <button type="submit" className="btn btn-primary" disabled={isLoading}>Perbarui Kata Sandi</button>
             </form>
         </div>
     )
