@@ -35,12 +35,7 @@ function Profile() {
 
             //? formatnya timestamp, maka buat seperti 14 agustus 2025
             if (res.response.memberSince?.seconds) {
-                const date = new Date(Number(res.response.memberSince?.seconds) * 1000);
-                setMemberSince(date.toLocaleDateString('id-ID', {
-                    day: 'numeric',
-                    month: 'long',
-                    year: 'numeric'
-                }));
+                
             } else {
                 setMemberSince(''); //?diset null
             }
