@@ -2,11 +2,13 @@ import { useForm } from "react-hook-form";
 import FormInput from "../FormInput/FormInput";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { getAuthClient } from "../../api/grpc/client";
+import Swal from "sweetalert2";
 
 const changePasswordSchema = yup.object().shape({
     current_password: yup.string().required('Kata sandi saat ini wajib diisi'),
-new_password: yup.string().required('Kata sandi baru wajib diisi').min(6, 'Kata sandi baru minimal 6 karakter'),
-confirm_new_password: yup.string().required('Kata sandi baru wajib diisi').oneOf([yup.ref('new_password')], 'Kata sandi baru tidak cocok'),
+    new_password: yup.string().required('Kata sandi baru wajib diisi').min(6, 'Kata sandi baru minimal 6 karakter'),
+    confirm_new_password: yup.string().required('Kata sandi baru wajib diisi').oneOf([yup.ref('new_password')], 'Kata sandi baru tidak cocok'),
 })
 
 interface ChangePasswordFormValues {
@@ -20,8 +22,39 @@ function ChangePasswordSection() {
         resolver: yupResolver(changePasswordSchema),
     });
 
-    const submitHandler = (values: ChangePasswordFormValues) => {
-        console.log(values);
+    const submitHandler = async (values: ChangePasswordFormValues) => {
+        const res = await getAuthClient().changePassword({
+            newPassword: values.new_password,
+            newPasswordConfirmation: values.confirm_new_password,
+            oldPassword: values.current_password
+        });
+        // console.log(res.response.base);
+
+        if (res.response.base?.isError ?? true) {
+            if (res.response.base?.message === "Old password is not matched") {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Ganti Password Gagal',
+                    text: 'Kata sandi lama salah.'
+                });
+                return
+
+            }
+
+            Swal.fire({
+                icon: 'error',
+                title: 'Terjadi Kesalahan',
+            })
+            return
+        }
+
+        Swal.fire({
+            icon: 'success',
+            title: 'Ganti Password Berhasil',
+            text: 'Silakan coba beberapa saat lagi.'
+        });
+
+        form.reset(); //? reset form / mengosongkan form
     }
 
     return (
