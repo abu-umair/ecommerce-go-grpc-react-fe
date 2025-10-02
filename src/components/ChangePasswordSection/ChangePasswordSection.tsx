@@ -1,4 +1,14 @@
-function ChangePasswordSection() {
+import { useForm } from "react-hook-form";
+
+interface ChangePasswordFormValues {
+    current_password: string;
+    new_password: string;
+    confirm_new_password: string;
+}
+
+function ChangePasswordSection {
+    const form = useForm<ChangePasswordFormValues>();
+    
     return (
         <div className="p-4 p-lg-5 border bg-white">
             <h2 className="h3 mb-3 text-black">Ubah Kata Sandi</h2>
