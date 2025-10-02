@@ -1,5 +1,13 @@
 import { useForm } from "react-hook-form";
 import FormInput from "../FormInput/FormInput";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+
+const changePasswordSchema = yup.object().shape({
+    current_password: yup.string().required('Kata sandi saat ini wajib diisi'),
+new_password: yup.string().required('Kata sandi baru wajib diisi').min(6, 'Kata sandi baru minimal 6 karakter'),
+confirm_new_password: yup.string().required('Kata sandi baru wajib diisi').oneOf([yup.ref('new_password')], 'Kata sandi baru tidak cocok'),
+})
 
 interface ChangePasswordFormValues {
     current_password: string;
@@ -8,7 +16,9 @@ interface ChangePasswordFormValues {
 }
 
 function ChangePasswordSection() {
-    const form = useForm<ChangePasswordFormValues>();
+    const form = useForm<ChangePasswordFormValues>({
+        resolver: yupResolver(changePasswordSchema),
+    });
 
     const submitHandler = (values: ChangePasswordFormValues) => {
         console.log(values);
