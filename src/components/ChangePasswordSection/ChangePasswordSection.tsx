@@ -37,7 +37,7 @@ function ChangePasswordSection() {
             //     newPasswordConfirmation: values.confirm_new_password,
             //     oldPassword: values.current_password
             // }));
-            setIsLoading(true);
+            // setIsLoading(true);
 
             const res = await getAuthClient().changePassword({
                 newPassword: values.new_password,
@@ -46,23 +46,23 @@ function ChangePasswordSection() {
             });
             // console.log(res.response.base);
 
-            if (res.response.base?.isError ?? true) {
-                if (res.response.base?.message === "Old password is not matched") {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Ganti Password Gagal',
-                        text: 'Kata sandi lama salah.'
-                    });
-                    return
+            // if (res.response.base?.isError ?? true) {
+            //     if (res.response.base?.message === "Old password is not matched") {
+            //         Swal.fire({
+            //             icon: 'error',
+            //             title: 'Ganti Password Gagal',
+            //             text: 'Kata sandi lama salah.'
+            //         });
+            //         return
 
-                }
+            //     }
 
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Terjadi Kesalahan',
-                })
-                return
-            }
+            //     Swal.fire({
+            //         icon: 'error',
+            //         title: 'Terjadi Kesalahan',
+            //     })
+            //     return
+            // }
 
             Swal.fire({
                 icon: 'success',
@@ -75,23 +75,23 @@ function ChangePasswordSection() {
             return
 
         } catch (e) {
-            if (e instanceof RpcError) {
-                console.log(e.code);
+            // if (e instanceof RpcError) {
+            //     console.log(e.code);
 
-                if (e.code === 'UNAUTHENTICATED' || e.code === 'INTERNAL') {
-                    logoutUser();
-                    localStorage.removeItem('access_token');
+            //     if (e.code === 'UNAUTHENTICATED' || e.code === 'INTERNAL') {
+            //         logoutUser();
+            //         localStorage.removeItem('access_token');
 
-                    Swal.fire({
-                        title: 'Sesi telah berakhir',
-                        text: 'Silakan login ulang.',
-                        icon: 'warning',
-                    })
+            //         Swal.fire({
+            //             title: 'Sesi telah berakhir',
+            //             text: 'Silakan login ulang.',
+            //             icon: 'warning',
+            //         })
 
-                    navigate('/');
-                    return;
-                }
-            }
+            //         navigate('/');
+            //         return;
+            //     }
+            // }
 
             Swal.fire({
                 title: 'Terjadi Kesalahan',
@@ -99,7 +99,7 @@ function ChangePasswordSection() {
                 icon: 'error',
             })
         } finally {
-            setIsLoading(false);
+            // setIsLoading(false);
         }
 
 
