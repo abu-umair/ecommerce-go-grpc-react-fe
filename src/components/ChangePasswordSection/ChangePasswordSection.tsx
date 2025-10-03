@@ -25,7 +25,6 @@ function ChangePasswordSection() {
     const submitApi = useGrpcApi();
     const navigate = useNavigate();
     const logoutUser = useAuthStore(state => state.logout);
-    const [isLoading, setIsLoading] = useState<boolean>(false);
     const form = useForm<ChangePasswordFormValues>({
         resolver: yupResolver(changePasswordSchema),
     });
