@@ -8,6 +8,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../store/auth";
 import { RpcError } from "@protobuf-ts/runtime-rpc";
+import useGrpcApi from "../../hooks/useGrpcApi";
 
 const changePasswordSchema = yup.object().shape({
     current_password: yup.string().required('Kata sandi saat ini wajib diisi'),
@@ -31,18 +32,11 @@ function ChangePasswordSection() {
 
     const submitHandler = async (values: ChangePasswordFormValues) => {
         try {
-            // submitApi.callApi(getAuthClient().changePassword({
-            //     newPassword: values.new_password,
-            //     newPasswordConfirmation: values.confirm_new_password,
-            //     oldPassword: values.current_password
-            // }));
-            // setIsLoading(true);
-
-            const res = await getAuthClient().changePassword({
+            const res = submitApi.callApi(getAuthClient().changePassword({
                 newPassword: values.new_password,
                 newPasswordConfirmation: values.confirm_new_password,
                 oldPassword: values.current_password
-            });
+            }));
             // console.log(res.response.base);
 
             // if (res.response.base?.isError ?? true) {
@@ -115,7 +109,7 @@ function ChangePasswordSection() {
                     register={form.register}
                     type="password"
                     label="Kata Sandi Saat Ini"
-                    disabled={isLoading}
+                    disabled={submitApi.isLoading}
                 />
 
                 <FormInput<ChangePasswordFormValues>
@@ -124,7 +118,7 @@ function ChangePasswordSection() {
                     register={form.register}
                     type="password"
                     label="Kata Sandi Baru"
-                    disabled={isLoading}
+                    disabled={submitApi.isLoading}
                 />
 
                 <FormInput<ChangePasswordFormValues>
@@ -133,7 +127,7 @@ function ChangePasswordSection() {
                     register={form.register}
                     type="password"
                     label="Konfirmasi Kata Sandi Baru"
-                    disabled={isLoading}
+                    disabled={submitApi.isLoading}
                 />
 
                 {/* <div className="form-group">
@@ -148,7 +142,7 @@ function ChangePasswordSection() {
                     <label className="text-black" htmlFor="confirm_password">Konfirmasi Kata Sandi Baru</label>
                     <input type="password" className="form-control" id="confirm_password" />
                 </div> */}
-                <button type="submit" className="btn btn-primary" disabled={isLoading}>Perbarui Kata Sandi</button>
+                <button type="submit" className="btn btn-primary" disabled={submitApi.isLoading}>Perbarui Kata Sandi</button>
             </form>
         </div>
     )
