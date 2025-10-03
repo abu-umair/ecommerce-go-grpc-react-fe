@@ -63,6 +63,17 @@ function ChangePasswordSection() {
                 })
                 return
             }
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Ganti Password Berhasil',
+                text: 'Silakan coba beberapa saat lagi.'
+            });
+
+            form.reset(); //? reset form / mengosongkan form
+
+            return
+
         } catch (e) {
             if (e instanceof RpcError) {
                 console.log(e.code);
@@ -92,13 +103,7 @@ function ChangePasswordSection() {
         }
 
 
-        Swal.fire({
-            icon: 'success',
-            title: 'Ganti Password Berhasil',
-            text: 'Silakan coba beberapa saat lagi.'
-        });
 
-        form.reset(); //? reset form / mengosongkan form
     }
 
     return (
