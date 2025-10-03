@@ -22,6 +22,7 @@ interface ChangePasswordFormValues {
 }
 
 function ChangePasswordSection() {
+    const submitApi = useGrpcApi();
     const navigate = useNavigate();
     const logoutUser = useAuthStore(state => state.logout);
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -31,6 +32,11 @@ function ChangePasswordSection() {
 
     const submitHandler = async (values: ChangePasswordFormValues) => {
         try {
+            // submitApi.callApi(getAuthClient().changePassword({
+            //     newPassword: values.new_password,
+            //     newPasswordConfirmation: values.confirm_new_password,
+            //     oldPassword: values.current_password
+            // }));
             setIsLoading(true);
 
             const res = await getAuthClient().changePassword({
