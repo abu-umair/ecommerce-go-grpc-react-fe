@@ -24,54 +24,46 @@ interface ChangePasswordFormValues {
 
 function ChangePasswordSection() {
     const submitApi = useGrpcApi();
-    
+
     const form = useForm<ChangePasswordFormValues>({
         resolver: yupResolver(changePasswordSchema),
     });
 
     const submitHandler = async (values: ChangePasswordFormValues) => {
-        try {
-            const res = submitApi.callApi(getAuthClient().changePassword({
-                newPassword: values.new_password,
-                newPasswordConfirmation: values.confirm_new_password,
-                oldPassword: values.current_password
-            }));
-            // console.log(res.response.base);
+        const res = submitApi.callApi(getAuthClient().changePassword({
+            newPassword: values.new_password,
+            newPasswordConfirmation: values.confirm_new_password,
+            oldPassword: values.current_password
+        }));
+        // console.log(res.response.base);
 
-            // if (res.response.base?.isError ?? true) {
-            //     if (res.response.base?.message === "Old password is not matched") {
-            //         Swal.fire({
-            //             icon: 'error',
-            //             title: 'Ganti Password Gagal',
-            //             text: 'Kata sandi lama salah.'
-            //         });
-            //         return
+        // if (res.response.base?.isError ?? true) {
+        //     if (res.response.base?.message === "Old password is not matched") {
+        //         Swal.fire({
+        //             icon: 'error',
+        //             title: 'Ganti Password Gagal',
+        //             text: 'Kata sandi lama salah.'
+        //         });
+        //         return
 
-            //     }
+        //     }
 
-            //     Swal.fire({
-            //         icon: 'error',
-            //         title: 'Terjadi Kesalahan',
-            //     })
-            //     return
-            // }
+        //     Swal.fire({
+        //         icon: 'error',
+        //         title: 'Terjadi Kesalahan',
+        //     })
+        //     return
+        // }
 
-            Swal.fire({
-                icon: 'success',
-                title: 'Ganti Password Berhasil',
-                text: 'Silakan coba beberapa saat lagi.'
-            });
+        Swal.fire({
+            icon: 'success',
+            title: 'Ganti Password Berhasil',
+            text: 'Silakan coba beberapa saat lagi.'
+        });
 
-            form.reset(); //? reset form / mengosongkan form
+        form.reset(); //? reset form / mengosongkan form
 
-            return
 
-        } catch (e) {
-            
-           
-        } finally {
-            // setIsLoading(false);
-        }
 
 
 
