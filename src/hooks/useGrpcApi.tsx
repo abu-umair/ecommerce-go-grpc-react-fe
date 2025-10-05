@@ -12,12 +12,30 @@ const useGrpcApi = () => {
 
 
             return res;
-        } catch (error) {
+        } catch (e) {
+            // if (e instanceof RpcError) {
+                        //     console.log(e.code);
+            
+                        //     if (e.code === 'UNAUTHENTICATED' || e.code === 'INTERNAL') {
+                        //         logoutUser();
+                        //         localStorage.removeItem('access_token');
+            
+                        //         Swal.fire({
+                        //             title: 'Sesi telah berakhir',
+                        //             text: 'Silakan login ulang.',
+                        //             icon: 'warning',
+                        //         })
+            
+                        //         navigate('/');
+                        //         return;
+                        //     }
+                        // }
+        } finally {
             setIsLoading(false);
         }
 
     }
-    return{
+    return {
         isLoading,
         callApi,
     }
