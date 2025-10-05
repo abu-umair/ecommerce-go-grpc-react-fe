@@ -1,21 +1,29 @@
-import { RpcError, type UnaryCall } from '@protobuf-ts/runtime-rpc';
+import { FinishedUnaryCall, RpcError, type UnaryCall } from '@protobuf-ts/runtime-rpc';
 import React, { useState } from 'react'
 import { useAuthStore } from '../store/auth';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
+import { BaseResponse } from '../../pb/common/base_response';
 
+
+interface GrpcBaseResponse {
+    base?: BaseResponse
+}
 const useGrpcApi = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const navigate = useNavigate();
     const logoutUser = useAuthStore(state => state.logout);
 
-    const callApi = async <T extends object, U extends object>(api: UnaryCall<T, U>) => {
+    const callApi = async <T extends object, U extends GrpcBaseResponse>(api: UnaryCall<T, U>) => {
         try {
             setIsLoading(true);
 
             const res = await api;
 
+            if (res.response.base?.isError ?? true) {
+                throw res; //? di throw (yang mana bukan error) agar bisa di catch (di JS bisa di throw baik positif maupun negatif)
+            }
 
             return res;
         } catch (e) {
@@ -36,6 +44,14 @@ const useGrpcApi = () => {
                     return;
                 }
             }
+
+            //?handle throw bagian sini (apakah e nya meruoakan FinishedUnaryCall)
+            //?jika menggunakn RpcError, maka bisa menggunakan seperti ini
+            //?if (e instanceof FinishedUnaryCall) {//?FinishedUnaryCall adl type di TS, sedangkan RpcError adl class (sehingga tidak bisa menggunakan seperti RpcError)
+            //? }
+
+
+            
 
             Swal.fire({
                 title: 'Terjadi Kesalahan',
