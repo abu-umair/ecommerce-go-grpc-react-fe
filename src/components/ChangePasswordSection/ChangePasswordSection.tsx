@@ -24,8 +24,7 @@ interface ChangePasswordFormValues {
 
 function ChangePasswordSection() {
     const submitApi = useGrpcApi();
-    const navigate = useNavigate();
-    const logoutUser = useAuthStore(state => state.logout);
+    
     const form = useForm<ChangePasswordFormValues>({
         resolver: yupResolver(changePasswordSchema),
     });
@@ -69,11 +68,7 @@ function ChangePasswordSection() {
 
         } catch (e) {
             
-            Swal.fire({
-                title: 'Terjadi Kesalahan',
-                text: 'Silakan coba beberapa saat lagi.',
-                icon: 'error',
-            })
+           
         } finally {
             // setIsLoading(false);
         }
