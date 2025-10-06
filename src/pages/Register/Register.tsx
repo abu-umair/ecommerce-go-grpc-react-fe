@@ -6,6 +6,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { getAuthClient } from '../../api/grpc/client';
 import Swal from 'sweetalert2';
 import { useState } from 'react';
+import useGrpcApi from '../../hooks/useGrpcApi';
 
 const registerSchema = yup.object().shape({
     full_name: yup.string().required('Nama lengkap wajib diisi'),
@@ -21,6 +22,7 @@ interface RegisterFormValues {
     password_confirmation: string;
 }
 const Register = () => {
+    const registerApi = useGrpcApi();
     const navigate = useNavigate();
     const [submitLoading, setSubmitLoading] = useState<boolean>(false)
     const form = useForm<RegisterFormValues>({
