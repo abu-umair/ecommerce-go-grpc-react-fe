@@ -4,10 +4,6 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { getAuthClient } from "../../api/grpc/client";
 import Swal from "sweetalert2";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useAuthStore } from "../../store/auth";
-import { RpcError } from "@protobuf-ts/runtime-rpc";
 import useGrpcApi from "../../hooks/useGrpcApi";
 
 const changePasswordSchema = yup.object().shape({
@@ -23,7 +19,7 @@ interface ChangePasswordFormValues {
 }
 
 function ChangePasswordSection() {
-    const submitApi = useGrpcApi(); 
+    const submitApi = useGrpcApi();
 
     const form = useForm<ChangePasswordFormValues>({
         resolver: yupResolver(changePasswordSchema),
@@ -49,7 +45,7 @@ function ChangePasswordSection() {
             },
             useDefaultError: false
         });
-        
+
         Swal.fire({
             icon: 'success',
             title: 'Ganti Password Berhasil',
