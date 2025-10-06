@@ -23,7 +23,7 @@ interface ChangePasswordFormValues {
 }
 
 function ChangePasswordSection() {
-    const submitApi = useGrpcApi();
+    const submitApi = useGrpcApi(); 
 
     const form = useForm<ChangePasswordFormValues>({
         resolver: yupResolver(changePasswordSchema),
