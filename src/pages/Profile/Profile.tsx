@@ -6,8 +6,11 @@ import Swal from 'sweetalert2';
 import { convertTimestampToDate } from '../../utils/date';
 import { RpcError } from '@protobuf-ts/runtime-rpc';
 import { useAuthStore } from '../../store/auth';
+import useGrpcApi from '../../hooks/useGrpcApi';
 
 function Profile() {
+    const profileApi = useGrpcApi();
+
     const location = useLocation();
     const navigate = useNavigate();
     const logoutUser = useAuthStore(state => state.logout);
@@ -23,8 +26,9 @@ function Profile() {
 
     useEffect(() => {
         const fetchProfile = async () => {
+            const res =  await profileApi.callApi(getAuthClient().getProfile({}));
             try {
-                const res = await getAuthClient().getProfile({})
+                
 
                 if (res.response.base?.isError ?? true) {
                     Swal.fire({
