@@ -7,6 +7,7 @@ import FormInput from '../../components/FormInput/FormInput';
 import { RpcError } from '@protobuf-ts/runtime-rpc';
 import { getAuthClient } from '../../api/grpc/client';
 import { useAuthStore } from '../../store/auth';
+import useGrpcApi from '../../hooks/useGrpcApi';
 
 const loginSchema = Yup.object().shape({
     email: Yup.string().email('Invalid email').required('Email is required'),
@@ -18,6 +19,8 @@ interface LoginFormValues {
     password: string;
 }
 const Login = () => {
+    const loginApi = useGrpcApi();
+
     const navigate = useNavigate();
     const loginUser = useAuthStore(state => state.login);
 
@@ -25,16 +28,11 @@ const Login = () => {
         resolver: yupResolver(loginSchema),
     })
     const submitHandler = async (values: LoginFormValues) => {
+        await loginApi.callApi(getAuthClient().login({
+            email: values.email,
+            password: values.password
+        }));
         try {
-            console.log(values);
-            //? membuat channel integrasi
-
-            const client = getAuthClient();
-            const res = await client.login({
-                email: values.email,
-                password: values.password
-            });
-
             if (res.response.base?.isError ?? true) {
                 Swal.fire({
                     icon: 'error',
