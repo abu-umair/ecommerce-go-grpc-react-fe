@@ -50,7 +50,7 @@ const useGrpcApi = () => {
                     })
 
                     navigate('/');
-                    return;
+                    throw e;
                 }
             }
 
@@ -66,7 +66,7 @@ const useGrpcApi = () => {
                 }
             }
 
-            if(args?.useDefaultError ?? true){ //?membuat pengecekan
+            if (args?.useDefaultError ?? true) { //?membuat pengecekan
                 Swal.fire({
                     title: 'Terjadi Kesalahan',
                     text: 'Silakan coba beberapa saat lagi.',

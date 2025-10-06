@@ -2,10 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import PlainHeroSection from '../../components/PlainHeroSection/PlainHeroSection';
 import { getAuthClient } from '../../api/grpc/client';
-import Swal from 'sweetalert2';
 import { convertTimestampToDate } from '../../utils/date';
-import { RpcError } from '@protobuf-ts/runtime-rpc';
-import { useAuthStore } from '../../store/auth';
 import useGrpcApi from '../../hooks/useGrpcApi';
 
 function Profile() {
@@ -13,7 +10,6 @@ function Profile() {
 
     const location = useLocation();
     const navigate = useNavigate();
-    const logoutUser = useAuthStore(state => state.logout);
     const [fullName, setFullName] = useState<string>();
     const [email, setEmail] = useState<string>();
     const [memberSince, setMemberSince] = useState<string>();
@@ -26,50 +22,13 @@ function Profile() {
 
     useEffect(() => {
         const fetchProfile = async () => {
-            const res =  await profileApi.callApi(getAuthClient().getProfile({}));
-            try {
-                
+            const res = await profileApi.callApi(getAuthClient().getProfile({}));
+            setFullName(res.response.fullName);
+            setEmail(res.response.email);
 
-                if (res.response.base?.isError ?? true) {
-                    Swal.fire({
-                        title: 'Terjadi Kesalahan',
-                        text: 'Silakan coba beberapa saat lagi.',
-                        icon: 'error',
-                    })
-                    return
-                }
-
-                setFullName(res.response.fullName);
-                setEmail(res.response.email);
-
-                //? formatnya timestamp, maka buat seperti 14 agustus 2025
-                const dateStr = convertTimestampToDate(res.response.memberSince);
-                setMemberSince(dateStr);
-            } catch (e) {
-                if (e instanceof RpcError) {
-                    console.log(e.code);
-
-                    if (e.code === 'UNAUTHENTICATED' || e.code === 'INTERNAL') {
-                        logoutUser();
-                        localStorage.removeItem('access_token');
-
-                        Swal.fire({
-                            title: 'Sesi telah berakhir',
-                            text: 'Silakan login ulang.',
-                            icon: 'warning',
-                        })
-
-                        navigate('/');
-                        return;
-                    }
-                }
-
-                Swal.fire({
-                    title: 'Terjadi Kesalahan',
-                    text: 'Silakan coba beberapa saat lagi.',
-                    icon: 'error',
-                })
-            }
+            //? formatnya timestamp, maka buat seperti 14 agustus 2025
+            const dateStr = convertTimestampToDate(res.response.memberSince);
+            setMemberSince(dateStr);
 
         }
 
