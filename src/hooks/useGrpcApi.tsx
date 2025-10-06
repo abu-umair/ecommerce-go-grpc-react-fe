@@ -6,6 +6,12 @@ import Swal from 'sweetalert2';
 import { BaseResponse } from '../../pb/common/base_response';
 
 
+
+interface callApiArgs<T extends object, U extends GrpcBaseResponse> {
+    useDefaultError?: boolean;
+    defaultError?: (e: FinishedUnaryCall<T, U>) => void; //?tdk mereturn apa2
+}
+
 interface GrpcBaseResponse {
     base?: BaseResponse
 }
@@ -15,7 +21,10 @@ const useGrpcApi = () => {
     const navigate = useNavigate();
     const logoutUser = useAuthStore(state => state.logout);
 
-    const callApi = async <T extends object, U extends GrpcBaseResponse>(api: UnaryCall<T, U>) => {
+    const callApi = async <T extends object, U extends GrpcBaseResponse>(
+        api: UnaryCall<T, U>,
+        args?: callApiArgs<T, U>
+    ) => {
         try {
             setIsLoading(true);
 
@@ -51,13 +60,22 @@ const useGrpcApi = () => {
             //? }
 
 
-            
+            if (typeof e === "object" && e != null && "response" in e) {
+                if (args?.defaultError) {
+                    args.defaultError(e as FinishedUnaryCall<T, U>);
+                }
+            }
 
-            Swal.fire({
-                title: 'Terjadi Kesalahan',
-                text: 'Silakan coba beberapa saat lagi.',
-                icon: 'error',
-            })
+            if(args?.useDefaultError ?? true){ //?membuat pengecekan
+                Swal.fire({
+                    title: 'Terjadi Kesalahan',
+                    text: 'Silakan coba beberapa saat lagi.',
+                    icon: 'error',
+                })
+            }
+
+
+            throw e; //?menghulangkan nilai Undefined nya dari return CallApi nya (UseGrpcApi)
         } finally {
             setIsLoading(false);
         }

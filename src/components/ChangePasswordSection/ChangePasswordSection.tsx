@@ -30,23 +30,27 @@ function ChangePasswordSection() {
     });
 
     const submitHandler = async (values: ChangePasswordFormValues) => {
-        const res = submitApi.callApi(getAuthClient().changePassword({
+        await submitApi.callApi(getAuthClient().changePassword({
             newPassword: values.new_password,
             newPasswordConfirmation: values.confirm_new_password,
             oldPassword: values.current_password
-        }));
+        }), {
+            defaultError: (res) => { //?menambahkan callback
+                //? hasilnya sama juga dengan if (res.response.base?.isError ?? true)
+                if (res.response.base?.message === "Old password is not matched") {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Ganti Password Gagal',
+                        text: 'Kata sandi lama salah.'
+                    });
+
+                }
+
+            },
+        });
         // console.log(res.response.base);
 
         // if (res.response.base?.isError ?? true) {
-        //     if (res.response.base?.message === "Old password is not matched") {
-        //         Swal.fire({
-        //             icon: 'error',
-        //             title: 'Ganti Password Gagal',
-        //             text: 'Kata sandi lama salah.'
-        //         });
-        //         return
-
-        //     }
 
         //     Swal.fire({
         //         icon: 'error',
