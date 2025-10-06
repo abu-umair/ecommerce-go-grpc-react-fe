@@ -30,50 +30,32 @@ const Register = () => {
     });
 
     const submitHandler = async (values: RegisterFormValues) => {
-        try {
-
-            console.log(values);
-            setSubmitLoading(false)
-
-            const res = await getAuthClient().register({ //?memanggil API
-                email: values.email,
-                fullName: values.full_name,
-                password: values.password,
-                passwordConfirmation: values.password_confirmation,
-            });
-
-            console.log(res);//? melihat error untuk di cek dan divalidasi error spesifik
-
-
-            if (res.response.base?.isError ?? true) {
+        await registerApi.callApi(getAuthClient().register({ //?memanggil API
+            email: values.email,
+            fullName: values.full_name,
+            password: values.password,
+            passwordConfirmation: values.password_confirmation
+        }), {
+            useDefaultError: false,
+            defaultError(res) {
                 if (res.response.base?.message === "User already exist") {
                     Swal.fire({
                         title: 'Register gagal',
                         text: "Email sudah terdaftar",
                         icon: 'error',
                     })
-                    return
-
                 }
-
-                Swal.fire({
-                    title: 'Terjadi kesalahan',
-                    text: 'Mohon coba beberapa saat lagi',
-                    icon: 'error',
-                })
-                return
             }
 
-            Swal.fire({
-                title: 'Registrasi Berhasil',
-                text: 'Silakan masuk menggunakan akun baru anda',
-                icon: 'success',
-            })
+        })
 
-            navigate('/login')
-        } finally {
-            setSubmitLoading(false)
-        }
+        Swal.fire({
+            title: 'Registrasi Berhasil',
+            text: 'Silakan masuk menggunakan akun baru anda',
+            icon: 'success',
+        })
+
+        navigate('/login')
 
     }
 
