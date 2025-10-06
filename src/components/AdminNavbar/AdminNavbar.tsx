@@ -2,8 +2,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../../store/auth';
 import Swal from 'sweetalert2';
 import { getAuthClient } from '../../api/grpc/client';
+import useGrpcApi from '../../hooks/useGrpcApi';
 
 function AdminNavbar() {
+    const logoutApi = useGrpcApii();
     const navigate = useNavigate();
     const logout = useAuthStore(state => state.logout);
 
