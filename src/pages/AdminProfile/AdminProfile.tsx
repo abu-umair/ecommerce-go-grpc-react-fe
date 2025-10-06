@@ -1,12 +1,17 @@
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import PlainHeroSection from '../../components/PlainHeroSection/PlainHeroSection';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import useGrpcApi from '../../hooks/useGrpcApi';
+import { getAuthClient } from '../../api/grpc/client';
 
 function AdminProfile() {
     const profileApi = useGrpcApi();
     const location = useLocation();
     const navigate = useNavigate();
+
+    //? copas dari profile.tsx
+    const [fullName, setFullName] = useState<string>();
+    const [email, setEmail] = useState<string>();
 
 
     useEffect(() => {
@@ -14,6 +19,16 @@ function AdminProfile() {
             navigate('/admin/profile/change-password');
         }
     }, [navigate, location.pathname]);
+
+    useEffect(() => { //? copas dari profile.tsx
+        const fetchProfile = async () => {
+            const res = await profileApi.callApi(getAuthClient().getProfile({}));
+            setFullName(res.response.fullName);
+            setEmail(res.response.email);
+        }
+
+        fetchProfile();
+    }, [])
 
     return (
         <>
@@ -25,16 +40,17 @@ function AdminProfile() {
                         <div className="col-12">
                             <div className="p-4 p-lg-5 border bg-white">
                                 <div className="row">
+                                    {/*? masih copas dari profile  */}
                                     <div className="col-md-4">
                                         <div className="form-group">
                                             <label className="text-black">Nama Lengkap</label>
-                                            <div className="form-control-plaintext">John Doe</div>
+                                            <div className="form-control-plaintext">{fullName}</div>
                                         </div>
                                     </div>
                                     <div className="col-md-4">
                                         <div className="form-group">
                                             <label className="text-black">Alamat Email</label>
-                                            <div className="form-control-plaintext">john.doe@example.com</div>
+                                            <div className="form-control-plaintext">{email}</div>
                                         </div>
                                     </div>
                                 </div>
