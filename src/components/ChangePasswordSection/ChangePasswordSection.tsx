@@ -47,18 +47,9 @@ function ChangePasswordSection() {
                 }
 
             },
+            useDefaultError: false
         });
-        // console.log(res.response.base);
-
-        // if (res.response.base?.isError ?? true) {
-
-        //     Swal.fire({
-        //         icon: 'error',
-        //         title: 'Terjadi Kesalahan',
-        //     })
-        //     return
-        // }
-
+        
         Swal.fire({
             icon: 'success',
             title: 'Ganti Password Berhasil',

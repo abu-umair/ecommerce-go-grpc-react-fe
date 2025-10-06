@@ -60,7 +60,7 @@ const useGrpcApi = () => {
             //? }
 
 
-            if (typeof e === "object" && e != null && "response" in e) {
+            if (typeof e === "object" && e != null && "response" in e && args?.useDefaultError === false) {
                 if (args?.defaultError) {
                     args.defaultError(e as FinishedUnaryCall<T, U>);
                 }
