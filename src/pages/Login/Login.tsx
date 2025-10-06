@@ -4,7 +4,6 @@ import * as Yup from 'yup';
 import Swal from 'sweetalert2';
 import { yupResolver } from "@hookform/resolvers/yup";
 import FormInput from '../../components/FormInput/FormInput';
-import { RpcError } from '@protobuf-ts/runtime-rpc';
 import { getAuthClient } from '../../api/grpc/client';
 import { useAuthStore } from '../../store/auth';
 import useGrpcApi from '../../hooks/useGrpcApi';
@@ -28,61 +27,40 @@ const Login = () => {
         resolver: yupResolver(loginSchema),
     })
     const submitHandler = async (values: LoginFormValues) => {
-        await loginApi.callApi(getAuthClient().login({
+        const res = await loginApi.callApi(getAuthClient().login({
             email: values.email,
             password: values.password
-        }));
-        try {
-            if (res.response.base?.isError ?? true) {
+        }), {
+            useDefaultAuthError: false,
+            defaultAuthError() {
                 Swal.fire({
                     icon: 'error',
                     title: 'Login gagal',
-                    text: 'Silakan coba beberapa saat lagi',
+                    text: 'Email atau password salah',
                     confirmButtonText: 'Ok'
-                });
+                })
             }
+        });
 
-            console.log(res.response.accessToken);
+        localStorage.setItem('access_token', res.response.accessToken);
 
-            localStorage.setItem('access_token', res.response.accessToken);
-
-            loginUser(res.response.accessToken);
+        loginUser(res.response.accessToken);
 
 
-            Swal.fire({
-                icon: 'success',
-                title: 'Login successfully',
-                confirmButtonText: 'Ok'
-            });
+        Swal.fire({
+            icon: 'success',
+            title: 'Login successfully',
+            confirmButtonText: 'Ok'
+        });
 
-            //?navigate admin dan user
-            if (useAuthStore.getState().role === 'admin') {
-                navigate('/admin/dashboard');
-            } else {
-                navigate('/');
-            }
-        } catch (e) {
-
-            if (e instanceof RpcError) {
-                console.log(e.code);
-                if (e.code === 'UNAUTHENTICATED' || e.code === 'INTERNAL') {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Login gagal',
-                        text: 'Email atau password salah',
-                        confirmButtonText: 'Ok'
-                    })
-                }
-                return
-            }
-
-            Swal.fire({
-                icon: 'error',
-                title: 'Login gagal',
-                text: 'Silakan coba beberapa saat lagi',
-                confirmButtonText: 'Ok'
-            });
+        //?navigate admin dan user
+        if (useAuthStore.getState().role === 'admin') {
+            navigate('/admin/dashboard');
+        } else {
+            navigate('/');
         }
+
+
     }
 
     return (

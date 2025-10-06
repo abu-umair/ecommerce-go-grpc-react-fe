@@ -10,6 +10,8 @@ import { BaseResponse } from '../../pb/common/base_response';
 interface callApiArgs<T extends object, U extends GrpcBaseResponse> {
     useDefaultError?: boolean;
     defaultError?: (e: FinishedUnaryCall<T, U>) => void; //?tdk mereturn apa2
+    useDefaultAuthError?: boolean;//?membuat custom lagi
+    defaultAuthError?: (e: RpcError) => void; //? krn yang masuk merupakan RpcError (line 41)
 }
 
 interface GrpcBaseResponse {
@@ -37,19 +39,26 @@ const useGrpcApi = () => {
             return res;
         } catch (e) {
             if (e instanceof RpcError) {
-                console.log(e.code);
+                if (args?.useDefaultAuthError ?? true) {
+                    console.log(e.code);
 
-                if (e.code === 'UNAUTHENTICATED' || e.code === 'INTERNAL') {
-                    logoutUser();
-                    localStorage.removeItem('access_token');
+                    if (e.code === 'UNAUTHENTICATED' || e.code === 'INTERNAL') {
+                        logoutUser();
+                        localStorage.removeItem('access_token');
 
-                    Swal.fire({
-                        title: 'Sesi telah berakhir',
-                        text: 'Silakan login ulang.',
-                        icon: 'warning',
-                    })
+                        Swal.fire({
+                            title: 'Sesi telah berakhir',
+                            text: 'Silakan login ulang.',
+                            icon: 'warning',
+                        })
 
-                    navigate('/');
+                        navigate('/');
+
+                    }
+
+                    if(args?.useDefaultAuthError === false && args?.defaultAuthError){
+                        args.defaultAuthError(e); //?mengirim e nya
+                    }
                     throw e;
                 }
             }
