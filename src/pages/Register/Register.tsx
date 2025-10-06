@@ -5,7 +5,6 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { getAuthClient } from '../../api/grpc/client';
 import Swal from 'sweetalert2';
-import { useState } from 'react';
 import useGrpcApi from '../../hooks/useGrpcApi';
 
 const registerSchema = yup.object().shape({
@@ -24,7 +23,6 @@ interface RegisterFormValues {
 const Register = () => {
     const registerApi = useGrpcApi();
     const navigate = useNavigate();
-    const [submitLoading, setSubmitLoading] = useState<boolean>(false)
     const form = useForm<RegisterFormValues>({
         resolver: yupResolver(registerSchema),
     });
@@ -73,7 +71,7 @@ const Register = () => {
                                     register={form.register}
                                     type='text'
                                     placeholder='Nama Lengkap'
-                                    disabled={submitLoading}
+                                    disabled={registerApi.isLoading}
                                 />
                                 <FormInput<RegisterFormValues>
                                     errors={form.formState.errors}
@@ -81,7 +79,7 @@ const Register = () => {
                                     register={form.register}
                                     type='text'
                                     placeholder='Alamat email'
-                                    disabled={submitLoading}
+                                    disabled={registerApi.isLoading}
 
                                 />
                                 <FormInput<RegisterFormValues>
@@ -90,7 +88,7 @@ const Register = () => {
                                     register={form.register}
                                     type='password'
                                     placeholder='kata sandi'
-                                    disabled={submitLoading}
+                                    disabled={registerApi.isLoading}
 
                                 />
                                 <FormInput<RegisterFormValues>
@@ -99,7 +97,7 @@ const Register = () => {
                                     register={form.register}
                                     type='password'
                                     placeholder='konfirmasi kata sandi'
-                                    disabled={submitLoading}
+                                    disabled={registerApi.isLoading}
 
                                 />
 
@@ -116,7 +114,7 @@ const Register = () => {
                                     <input type="password" className="form-control" placeholder="Konfirmasi Kata Sandi" required />
                                 </div> */}
                                 <div className="form-group">
-                                    <button type="submit" className="btn btn-primary btn-block" disabled={submitLoading}>Buat Akun</button>
+                                    <button type="submit" className="btn btn-primary btn-block" disabled={registerApi.isLoading}>Buat Akun</button>
                                 </div>
                                 <div className="text-center mt-4">
                                     <p>Sudah punya akun? <Link to="/login" className="text-primary">Masuk di sini</Link></p>
