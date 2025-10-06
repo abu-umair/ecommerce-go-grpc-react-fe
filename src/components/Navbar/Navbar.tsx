@@ -28,14 +28,11 @@ function Navbar() {
         });
 
         if (result.isConfirmed) {
-            logoutApi();
-            const res = await getAuthClient().logout({});
+            await logoutApi.callApi(getAuthClient().logout({}));
 
-            if (!res.response.base?.isError) {
-                logout();
-                localStorage.removeItem('access_token');
-                navigate('/');
-            }
+            logout();
+            localStorage.removeItem('access_token');
+            navigate('/');
         }
     }
 
