@@ -1,8 +1,10 @@
 import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import PlainHeroSection from '../../components/PlainHeroSection/PlainHeroSection';
 import { useEffect } from 'react';
+import useGrpcApi from '../../hooks/useGrpcApi';
 
 function AdminProfile() {
+    const profileApi = useGrpcApi();
     const location = useLocation();
     const navigate = useNavigate();
 
