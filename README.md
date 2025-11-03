@@ -80,3 +80,15 @@ npm run dev
 ### Integrasi Tambah Produk Admin FE
 #### History Steps
 1. Memindahkan file product.proto dan pagination.proto dr BE
+
+2  generate protonya lagi yang mengarah ke folder pb
+```bash
+npx protoc --ts_out ./pb --proto_path ./proto product/product.proto
+```
+
+3  generate common/base_response
+```bash
+npx protoc --ts_out ./pb --proto_path ./proto common/pagination.proto
+```
+
+4. kemudian lihat hasil generate ada error atau tidak
