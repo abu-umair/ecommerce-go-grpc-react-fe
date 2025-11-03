@@ -79,3 +79,4 @@ npm run dev
 
 ### Integrasi Tambah Produk Admin FE
 #### History Steps
+1. Memindahkan file product.proto dan pagination.proto dr BE
