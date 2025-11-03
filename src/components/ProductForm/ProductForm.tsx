@@ -1,6 +1,7 @@
 import { useForm } from "react-hook-form";
 import FormInput from "../FormInput/FormInput";
 import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 
 const changeProductSchema = yup.object().shape({
@@ -26,7 +27,9 @@ interface ProductFormValues {
 
 
 function ProductForm() {
-    const form = useForm<ProductFormValues>();
+    const form = useForm<ProductFormValues>({
+        resolver: yupResolver(changeProductSchema),
+    });
 
 
     const submitHandler = (values: ProductFormValues) => {
