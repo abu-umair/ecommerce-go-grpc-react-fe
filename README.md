@@ -73,3 +73,6 @@ npx protoc --ts_out ./pb --proto_path ./proto common/base_response.proto
 npm run dev
 
 ```
+
+### Input Rupiah FE
+#### History Steps
