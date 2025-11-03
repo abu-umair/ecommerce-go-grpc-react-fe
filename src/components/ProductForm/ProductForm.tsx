@@ -3,6 +3,7 @@ import FormInput from "../FormInput/FormInput";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import CurrencyInput from "../CurrencyInput/CurrencyInput";
+import { type ProductFormValues } from "./../../types/product";
 
 
 const changeProductSchema = yup.object().shape({
@@ -19,15 +20,12 @@ const changeProductSchema = yup.object().shape({
         })
 })
 
-interface ProductFormValues {
-    name: string;
-    price: number;
-    description?: string;
-    image: FileList;
+
+interface ProductFormProps {
+    onSubmit: (values: ProductFormValues) => void;
 }
 
-
-function ProductForm() {
+function ProductForm(props: ProductFormProps) {
     const form = useForm<ProductFormValues>({
         resolver: yupResolver(changeProductSchema),
     });
@@ -35,6 +33,7 @@ function ProductForm() {
 
     const submitHandler = (values: ProductFormValues) => {
         console.log(values);
+        props.onSubmit(values);
 
     }
 
