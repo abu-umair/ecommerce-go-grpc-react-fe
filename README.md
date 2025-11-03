@@ -65,3 +65,11 @@ npx protoc --ts_out ./pb --proto_path ./proto auth/auth.proto
 npx protoc --ts_out ./pb --proto_path ./proto common/base_response.proto
 ```
 
+## E-Commerce Project - Produk
+### Setup Form Tambah Produk Admin FE
+#### History Steps
+1. run project
+```bash
+npm run dev
+
+```
