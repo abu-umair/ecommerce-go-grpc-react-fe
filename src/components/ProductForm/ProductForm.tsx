@@ -59,11 +59,7 @@ function ProductForm() {
                     placeholder="Harga Produk"
                     labelRequired
                 />
-                {/* sementara dibiarin karena terkait harga / curency  */}
-                <div className="form-group mb-3">
-                    <label className="text-black" htmlFor="product_price">Harga <span className="text-danger">*</span></label>
-                    <input type="number" className="form-control" id="product_price" placeholder="Harga Produk" />
-                </div>
+
 
                 <FormInput<ProductFormValues>
                     errors={form.formState.errors}
