@@ -21,7 +21,7 @@ function ProductForm() {
     return (
         <div className="p-4 p-lg-5 border bg-white">
             <form onSubmit={form.handleSubmit(submitHandler)}>
-                <FormInput
+                <FormInput<ProductFormValues>
                     errors={form.formState.errors}
                     name="name"
                     register={form.register}
@@ -35,15 +35,26 @@ function ProductForm() {
                     <input type="text" className="form-control" id="product_name" placeholder="Nama Produk" />
                 </div> */}
 
+                {/* sementara dibiarin karena terkait harga / curency  */}
                 <div className="form-group mb-3">
                     <label className="text-black" htmlFor="product_price">Harga <span className="text-danger">*</span></label>
                     <input type="number" className="form-control" id="product_price" placeholder="Harga Produk" />
                 </div>
 
-                <div className="form-group mb-3">
+                <FormInput<ProductFormValues>
+                    errors={form.formState.errors}
+                    name="image"
+                    register={form.register}
+                    type="image"
+                    label="Gambar Produk"
+                    placeholder="Gambar Produk"
+                    labelRequired
+                />
+
+                {/* <div className="form-group mb-3">
                     <label className="text-black" htmlFor="product_image">Gambar Produk <span className="text-danger">*</span></label>
                     <input type="file" className="form-control" id="product_image" accept="image/*" />
-                </div>
+                </div> */}
 
                 <div className="form-group mb-4">
                     <label className="text-black" htmlFor="product_description">Deskripsi</label>
