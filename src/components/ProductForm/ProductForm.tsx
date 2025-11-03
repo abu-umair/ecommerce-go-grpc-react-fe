@@ -6,7 +6,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 
 const changeProductSchema = yup.object().shape({
     name: yup.string().required("Nama produk wajib diisi"),
-    price: yup.number().required("Harga produk wajib diisi").typeError("Harga produk tidak valid").moreThan(0, "Harga produk harus lebih dari 0"),
+    // price: yup.number().required("Harga produk wajib diisi").typeError("Harga produk tidak valid").moreThan(0, "Harga produk harus lebih dari 0"),
     description: yup.string(),
     image: yup.mixed<FileList>().required("Gambar produk wajib diisi")
         .test("fileLength", "Gambar produk wajib diisi", (fileList) => {
@@ -20,7 +20,7 @@ const changeProductSchema = yup.object().shape({
 
 interface ProductFormValues {
     name: string;
-    price: number;
+    // price: number;
     description?: string;
     image: FileList;
 }
