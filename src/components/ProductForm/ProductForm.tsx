@@ -23,6 +23,7 @@ const changeProductSchema = yup.object().shape({
 
 interface ProductFormProps {
     onSubmit: (values: ProductFormValues) => void;
+    disabled?: boolean
 }
 
 function ProductForm(props: ProductFormProps) {
@@ -48,6 +49,7 @@ function ProductForm(props: ProductFormProps) {
                     label="Nama Produk"
                     placeholder="Nama Produk"
                     labelRequired
+                    disabled={props.disabled}
                 />
 
                 <CurrencyInput<ProductFormValues>
@@ -57,6 +59,8 @@ function ProductForm(props: ProductFormProps) {
                     label="Harga Produk"
                     placeholder="Harga Produk"
                     labelRequired
+                    disabled={props.disabled}
+
                 />
 
 
@@ -68,6 +72,8 @@ function ProductForm(props: ProductFormProps) {
                     label="Gambar Produk"
                     placeholder="Gambar Produk"
                     labelRequired
+                    disabled={props.disabled}
+
                 />
 
 
@@ -78,11 +84,13 @@ function ProductForm(props: ProductFormProps) {
                     type="textarea"
                     label="Deskripsi Produk"
                     placeholder="Deskripsi Produk ..."
+                    disabled={props.disabled}
+
                 />
 
 
                 <div className="form-group">
-                    <button className="btn btn-primary" type="submit">Simpan Produk</button>
+                    <button className="btn btn-primary" type="submit" disabled={props.disabled}>Simpan Produk</button>
                 </div>
             </form>
         </div>

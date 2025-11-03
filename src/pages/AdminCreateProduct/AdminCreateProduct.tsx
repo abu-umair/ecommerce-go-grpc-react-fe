@@ -6,6 +6,7 @@ import { getProductClient } from "../../api/grpc/client";
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import { useState } from 'react';
 
 
 interface uploadImageResponse {
@@ -16,41 +17,48 @@ interface uploadImageResponse {
 
 
 function AdminCreateProduct() {
+    const [uploadLoading, setUploadLoading] = useState<boolean>(false)
     const navigate = useNavigate();
     const createProductApi = useGrpcApi();
 
     const submitHandler = async (values: ProductFormValues) => {
         console.log(values);
 
-        //?upload image menggunakan axios saja
-        const formData = new FormData();
-        formData.append('image', values.image[0]);
+        try {
+            //?upload image menggunakan axios saja
+            setUploadLoading(true);//?manual karena menggunakan axios
+            const formData = new FormData();
+            formData.append('image', values.image[0]);
 
-        const uploadResponse = await axios.post<uploadImageResponse>('http://localhost:4000/product/upload', formData);
-        if (uploadResponse.status !== 200) {
+            const uploadResponse = await axios.post<uploadImageResponse>('http://localhost:4000/product/upload', formData);
+            if (uploadResponse.status !== 200) {
+                Swal.fire({
+                    title: "Upload Gambar Gagal",
+                    text: "Silakan coba beberapa saat lagi.",
+                    icon: "error",
+                })
+                return
+            }
+
+
+            //?create menggunakan grpc 
+            await createProductApi.callApi(getProductClient().createProduct({
+                description: values.description ?? "",
+                imageFileName: uploadResponse.data.file_name,
+                name: values.name,
+                price: values.price,
+            }));
+
             Swal.fire({
-                title: "Upload Gambar Gagal",
-                text: "Silakan coba beberapa saat lagi.",
-                icon: "error",
-            })
-            return
+                title: "Tambah Produk Sukses",
+                icon: "success",
+            });
+
+            navigate('/admin/products');
+        } finally {
+            setUploadLoading(false);
+
         }
-
-
-        //?create menggunakan grpc 
-        await createProductApi.callApi(getProductClient().createProduct({
-            description: values.description ?? "",
-            imageFileName: uploadResponse.data.file_name,
-            name: values.name,
-            price: values.price,
-        }));
-
-        Swal.fire({
-            title: "Tambah Produk Sukses",
-            icon: "success",
-        });
-
-        navigate('/admin/products');
 
     }
 
@@ -62,7 +70,10 @@ function AdminCreateProduct() {
                 <div className="container">
                     <div className="row justify-content-center">
                         <div className="col-md-8">
-                            <ProductForm onSubmit={submitHandler} />
+                            <ProductForm
+                                onSubmit={submitHandler}
+                                disabled={createProductApi.isLoading || uploadLoading} //?jika salah satu sedang loading, maka disabled
+                            />
                         </div>
                     </div>
                 </div>
