@@ -1,4 +1,5 @@
 import { useForm } from "react-hook-form";
+import FormInput from "../FormInput/FormInput";
 
 interface ProductFormValues {
     name: string;
@@ -20,10 +21,19 @@ function ProductForm() {
     return (
         <div className="p-4 p-lg-5 border bg-white">
             <form onSubmit={form.handleSubmit(submitHandler)}>
-                <div className="form-group mb-3">
+                <FormInput
+                    errors={form.formState.errors}
+                    name="name"
+                    register={form.register}
+                    type="text"
+                    label="Nama Produk"
+                    placeholder="Nama Produk"
+                    labelRequired
+                />
+                {/* <div className="form-group mb-3">
                     <label className="text-black" htmlFor="product_name">Nama Produk <span className="text-danger">*</span></label>
                     <input type="text" className="form-control" id="product_name" placeholder="Nama Produk" />
-                </div>
+                </div> */}
 
                 <div className="form-group mb-3">
                     <label className="text-black" htmlFor="product_price">Harga <span className="text-danger">*</span></label>
