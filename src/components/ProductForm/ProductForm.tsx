@@ -54,7 +54,7 @@ function ProductForm() {
                 <CurrencyInput<ProductFormValues>
                     errors={form.formState.errors}
                     name="price"
-                    register={form.register}
+                    control={form.control}
                     label="Harga Produk"
                     placeholder="Harga Produk"
                     labelRequired
