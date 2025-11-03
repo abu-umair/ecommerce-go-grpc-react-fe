@@ -26,7 +26,7 @@ export const getAuthClient = () => {
     return authClient
 }
 
-export const getProuctClient = () => {
+export const getProductClient = () => {
     if (productClient === null) {
         productClient = new ProductServiceClient(getWebTransport());
     }
