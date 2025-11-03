@@ -56,13 +56,22 @@ function ProductForm() {
                     <input type="file" className="form-control" id="product_image" accept="image/*" />
                 </div> */}
 
-                <div className="form-group mb-4">
+                <FormInput<ProductFormValues>
+                    errors={form.formState.errors}
+                    name="description"
+                    register={form.register}
+                    type="textarea"
+                    label="Deskripsi Produk"
+                    placeholder="Deskripsi Produk ..."
+                />
+
+                {/* <div className="form-group mb-4">
                     <label className="text-black" htmlFor="product_description">Deskripsi</label>
                     <textarea className="form-control" id="product_description" rows={4} placeholder="Deskripsi produk..."></textarea>
-                </div>
+                </div> */}
 
                 <div className="form-group">
-                    <button className="btn btn-primary">Simpan Produk</button>
+                    <button className="btn btn-primary" type="submit">Simpan Produk</button>
                 </div>
             </form>
         </div>

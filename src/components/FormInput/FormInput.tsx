@@ -27,6 +27,16 @@ function FormInput<T extends Record<string, any>>(props: FormInputProps<T>) {
                 />
             )
         }
+        if (props.type === 'textarea') {
+            return (
+                <textarea
+                    rows={4}
+                    className={`form-control ${props.errors[props.name] ? 'is-invalid' : ''}`} id={props.name} placeholder={props.placeholder} disabled={props.disabled} {...props.register(props.name)}
+                >
+                </textarea>
+
+            )
+        }
         //?input default 
         return (
             <input type={props.type} className={`form-control ${props.errors[props.name] ? 'is-invalid' : ''}`} id={props.name} placeholder={props.placeholder} disabled={props.disabled} {...props.register(props.name)} />
