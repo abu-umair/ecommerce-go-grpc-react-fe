@@ -3,7 +3,7 @@ import { FieldErrors, Path, UseFormRegister } from 'react-hook-form'
 
 // eslint-disable-next-line
 interface FormInputProps<T extends Record<string, any>> { //?perlu di extend hingga menjadi Record 
-    type: "text" | "password" | "image" //? type nya bisa text atau password, atau image
+    type: "text" | "password" | "image" | "textarea" //? type nya bisa text atau password, atau image, atau textarea
     placeholder?: string //?tidak wajib, (bisa dibuat optional)
     register: UseFormRegister<T>; //?membuat generik 
     name: Path<T>;
@@ -18,12 +18,14 @@ interface FormInputProps<T extends Record<string, any>> { //?perlu di extend hin
 function FormInput<T extends Record<string, any>>(props: FormInputProps<T>) {
     const renderInput = () => {
         if (props.type === 'image') {
-            <input
-                type="file"
-                accept='image/*'
-                multiple={false}
-                className={`form-control ${props.errors[props.name] ? 'is-invalid' : ''}`} id={props.name} placeholder={props.placeholder} disabled={props.disabled} {...props.register(props.name)}
-            />
+            return (
+                <input
+                    type="file"
+                    accept='image/*'
+                    multiple={false}
+                    className={`form-control ${props.errors[props.name] ? 'is-invalid' : ''}`} id={props.name} placeholder={props.placeholder} disabled={props.disabled} {...props.register(props.name)}
+                />
+            )
         }
         //?input default 
         return (
