@@ -92,3 +92,6 @@ npx protoc --ts_out ./pb --proto_path ./proto common/pagination.proto
 ```
 
 4. kemudian lihat hasil generate ada error atau tidak
+
+### Integrasi List Produk Admin FE
+#### History Steps
