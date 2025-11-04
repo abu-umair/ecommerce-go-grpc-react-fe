@@ -34,6 +34,10 @@ function AdminProductListSection() {
                 pagination: {
                     currentPage: currentPage,
                     itemPerPage: 2,
+                    sort: sortConfig.direction ? {
+                        direction: sortConfig.direction,
+                        field: sortConfig.key,
+                    } : undefined
                 }
             }))
 
@@ -48,7 +52,7 @@ function AdminProductListSection() {
         }
 
         fetchData();
-    }, [currentPage]);
+    }, [currentPage, sortConfig.direction, sortConfig.key]);
 
     return (
         <div>
@@ -64,7 +68,7 @@ function AdminProductListSection() {
                         <tr>
                             <th>Gambar</th>
                             <SortableHeader //?sortnya sudah di integrasikan
-                                label="Nama Produk"
+                                label="Nama Produk"//?sortConfig.key: tergantng dari sort key ini
                                 sortKey="name"
                                 currentSort={sortConfig}
                                 onSort={handleSort}
