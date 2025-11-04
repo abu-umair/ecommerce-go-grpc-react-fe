@@ -1,17 +1,53 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import useSortableHeader from '../../hooks/useSortableHeader';
 import SortableHeader from '../SortableHeader/SortableHeader';
 import Pagination from '../Pagination/Pagination';
 import { Link } from 'react-router-dom';
+import useGrpcApi from '../../hooks/useGrpcApi';
+import { getProductClient } from '../../api/grpc/client';
+
+
+interface Product {
+    id: string;
+    name: string;
+    description: string;
+    price: number;
+    imageUrl: string;
+}
 
 function AdminProductListSection() {
+    const listApi = useGrpcApi();
+
     const { handleSort, sortConfig } = useSortableHeader();
+    const [items, setItems] = useState<Product[]>([])
     const [currentPage, setCurrentPage] = useState(1);
     const totalPages = 5;
 
     const handlePageChange = (page: number) => {
         setCurrentPage(page);
     };
+
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const res = await listApi.callApi(getProductClient().listProductAdmin({
+                pagination: {
+                    currentPage: currentPage,
+                    itemPerPage: 2,
+                }
+            }))
+
+            setItems(res.response.data.map(d => ({
+                description: d.description,
+                id: d.id,
+                imageUrl: d.imageUrl,
+                name: d.name,
+                price: d.price,
+            })));
+        }
+
+        fetchData();
+    }, [currentPage]);
 
     return (
         <div>
@@ -26,7 +62,7 @@ function AdminProductListSection() {
                     <thead>
                         <tr>
                             <th>Gambar</th>
-                            <SortableHeader
+                            <SortableHeader //?sortnya sudah di integrasikan
                                 label="Nama Produk"
                                 sortKey="name"
                                 currentSort={sortConfig}
@@ -48,18 +84,20 @@ function AdminProductListSection() {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>
-                                <img src="/images/product-1.png" width="50" alt="Produk" />
-                            </td>
-                            <td>Kursi Nordic</td>
-                            <td>Rp775.000</td>
-                            <td>Lorem ipsum dolor sit amet consectetur adipisicing elit. Laborum, ipsam?</td>
-                            <td>
-                                <button className="btn btn-secondary me-2">Edit</button>
-                                <button className="btn">Hapus</button>
-                            </td>
-                        </tr>
+                        {items.map(i => (
+                            <tr key={i.id}>
+                                <td>
+                                    <img src={i.imageUrl} width="50" alt="Produk" />
+                                </td>
+                                <td>{i.name}</td>
+                                <td>{i.price}</td>
+                                <td>{i.description}</td>
+                                <td>{/* integrasi di video berikutna  */}
+                                    <button className="btn btn-secondary me-2">Edit</button>
+                                    <button className="btn">Hapus</button>
+                                </td>
+                            </tr>
+                        ))}
                     </tbody>
                 </table>
             </div>
