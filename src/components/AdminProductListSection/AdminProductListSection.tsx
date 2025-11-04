@@ -21,7 +21,7 @@ function AdminProductListSection() {
     const { handleSort, sortConfig } = useSortableHeader();
     const [items, setItems] = useState<Product[]>([])
     const [currentPage, setCurrentPage] = useState(1);
-    const totalPages = 5;
+    const [totalPages, setTotalPages] = useState(0);
 
     const handlePageChange = (page: number) => {
         setCurrentPage(page);
@@ -44,6 +44,7 @@ function AdminProductListSection() {
                 name: d.name,
                 price: d.price,
             })));
+            setTotalPages(res.response.pagination?.totalPageCount ?? 0);
         }
 
         fetchData();
