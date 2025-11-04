@@ -5,6 +5,7 @@ import Pagination from '../Pagination/Pagination';
 import { Link } from 'react-router-dom';
 import useGrpcApi from '../../hooks/useGrpcApi';
 import { getProductClient } from '../../api/grpc/client';
+import { formatToIDR } from '../../utils/number';
 
 
 interface Product {
@@ -95,7 +96,7 @@ function AdminProductListSection() {
                                     <img src={i.imageUrl} width="50" alt="Produk" />
                                 </td>
                                 <td>{i.name}</td>
-                                <td>{i.price}</td>
+                                <td>{formatToIDR(i.price)}</td>
                                 <td>{i.description}</td>
                                 <td>{/* integrasi di video berikutna  */}
                                     <button className="btn btn-secondary me-2">Edit</button>
