@@ -125,7 +125,9 @@ function AdminProductListSection() {
                                 <td>{formatToIDR(i.price)}</td>
                                 <td>{i.description}</td>
                                 <td>{/* integrasi di video berikutna  */}
-                                    <button className="btn btn-secondary me-2">Edit</button>
+                                    <Link to={`/admin/products/${i.id}/edit`}>
+                                        <button className="btn btn-secondary me-2">Edit</button>
+                                    </Link>
                                     <button className="btn" onClick={() => deleteHandler(i.id)}>Hapus</button>
                                 </td>
                             </tr>
