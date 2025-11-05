@@ -25,7 +25,7 @@ function AdminProductListSection() {
     const [items, setItems] = useState<Product[]>([])
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
-
+    const [refreshFlag, setRefreshFlag] = useState<boolean>(true); //?(second)
     const handlePageChange = (page: number) => {
         setCurrentPage(page);
     };
@@ -51,6 +51,8 @@ function AdminProductListSection() {
             title: 'Hapus Sukses',
             icon: 'success',
         });
+
+        setRefreshFlag(value => !value);
     }
 
     useEffect(() => {
@@ -77,7 +79,7 @@ function AdminProductListSection() {
         }
 
         fetchData();
-    }, [currentPage, sortConfig.direction, sortConfig.key]);
+    }, [currentPage, sortConfig.direction, sortConfig.key, refreshFlag]);
 
     return (
         <div>
