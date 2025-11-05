@@ -3,7 +3,7 @@ import ProductForm from '../../components/ProductForm/ProductForm'
 import { type ProductFormValues } from "./../../types/product";
 import useGrpcApi from "../../hooks/useGrpcApi";
 import { getProductClient } from "../../api/grpc/client";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import { useState } from 'react';
@@ -15,8 +15,14 @@ interface uploadImageResponse {
     success: boolean;
 }
 
+//*1. kita dapat id
+//*2. get detail produk dengan id
+//*3. assign value detail ke form edit
+//*4. edit
+//*5. submit
 
 function AdminEditProduct() {
+    const { id } = useParams();
     const [uploadLoading, setUploadLoading] = useState<boolean>(false)
     const navigate = useNavigate();
     const createProductApi = useGrpcApi();
