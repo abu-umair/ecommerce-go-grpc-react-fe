@@ -4,6 +4,7 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import CurrencyInput from "../CurrencyInput/CurrencyInput";
 import { type ProductFormValues } from "./../../types/product";
+import { useEffect } from "react";
 
 
 const changeProductSchema = yup.object().shape({
@@ -23,12 +24,14 @@ const changeProductSchema = yup.object().shape({
 
 interface ProductFormProps {
     onSubmit: (values: ProductFormValues) => void;
-    disabled?: boolean
+    disabled?: boolean;
+    defaultValues?: ProductFormValues;
 }
 
 function ProductForm(props: ProductFormProps) {
     const form = useForm<ProductFormValues>({
         resolver: yupResolver(changeProductSchema),
+        defaultValues: props.defaultValues //?mengintegrasikan default values 
     });
 
 
@@ -37,6 +40,14 @@ function ProductForm(props: ProductFormProps) {
         props.onSubmit(values);
 
     }
+
+    useEffect(() => {
+        if (props.defaultValues) { //?jika ada isinya, baru direset
+            form.reset(props.defaultValues )
+        }
+
+    }, [props.defaultValues])
+
 
     return (
         <div className="p-4 p-lg-5 border bg-white">

@@ -6,7 +6,7 @@ import { getProductClient } from "../../api/grpc/client";
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 
 interface uploadImageResponse {
@@ -23,9 +23,31 @@ interface uploadImageResponse {
 
 function AdminEditProduct() {
     const { id } = useParams();
+    const detailApi = useGrpcApi();
+
+
     const [uploadLoading, setUploadLoading] = useState<boolean>(false)
     const navigate = useNavigate();
     const createProductApi = useGrpcApi();
+    const [defaultValues, setDefaultValues] = useState<ProductFormValues | undefined>(undefined);
+
+    useEffect(() => {
+        const fetchDetail = async () => {
+            const res = await detailApi.callApi(getProductClient().detailProduct({
+                id: id ?? "" //?menghandle undifined
+            }));
+
+            setDefaultValues({
+                name: res.response.name,
+                price: res.response.price,
+                description: res.response.description,
+                image: new DataTransfer().files, //? untuk menggantil File List
+            });
+        }
+
+        fetchDetail();
+
+    }, [])
 
     const submitHandler = async (values: ProductFormValues) => {
         console.log(values);
@@ -70,7 +92,7 @@ function AdminEditProduct() {
 
     return (
         <>
-            <PlainHeroSection title='Tambah Produk' />
+            <PlainHeroSection title='Edit Produk' />
 
             <div className="untree_co-section">
                 <div className="container">
@@ -78,7 +100,8 @@ function AdminEditProduct() {
                         <div className="col-md-8">
                             <ProductForm
                                 onSubmit={submitHandler}
-                                disabled={createProductApi.isLoading || uploadLoading} //?jika salah satu sedang loading, maka disabled
+                                disabled={createProductApi.isLoading || uploadLoading|| detailApi.isLoading} //?jika salah satu sedang loading, maka disabled
+                                defaultValues={defaultValues}
                             />
                         </div>
                     </div>
