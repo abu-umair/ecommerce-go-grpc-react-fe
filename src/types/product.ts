@@ -3,4 +3,5 @@ export interface ProductFormValues { //?memindahkan dari ProductForm.tsx
     price: number;
     description?: string;
     image: FileList;
+    imageUrl?: string;
 }
