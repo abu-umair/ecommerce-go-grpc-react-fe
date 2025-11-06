@@ -28,7 +28,7 @@ function AdminEditProduct() {
 
     const [uploadLoading, setUploadLoading] = useState<boolean>(false)
     const navigate = useNavigate();
-    const createProductApi = useGrpcApi();
+    const editProductApi = useGrpcApi();
     const [defaultValues, setDefaultValues] = useState<ProductFormValues | undefined>(undefined);
 
     useEffect(() => {
@@ -42,6 +42,7 @@ function AdminEditProduct() {
                 price: res.response.price,
                 description: res.response.description,
                 image: new DataTransfer().files, //? untuk menggantil File List
+                imageUrl: res.response.imageUrl,
             });
         }
 
@@ -55,30 +56,36 @@ function AdminEditProduct() {
         try {
             //?upload image menggunakan axios saja
             setUploadLoading(true);//?manual karena menggunakan axios
-            const formData = new FormData();
-            formData.append('image', values.image[0]);
+            let newImageFileName = "";
+            if (values.image.length > 0) {
+                const formData = new FormData();
+                formData.append('image', values.image[0]);
 
-            const uploadResponse = await axios.post<uploadImageResponse>('http://localhost:4000/product/upload', formData);
-            if (uploadResponse.status !== 200) {
-                Swal.fire({
-                    title: "Upload Gambar Gagal",
-                    text: "Silakan coba beberapa saat lagi.",
-                    icon: "error",
-                })
-                return
+                const uploadResponse = await axios.post<uploadImageResponse>('http://localhost:4000/product/upload', formData);
+                if (uploadResponse.status !== 200) {
+                    Swal.fire({
+                        title: "Upload Gambar Gagal",
+                        text: "Silakan coba beberapa saat lagi.",
+                        icon: "error",
+                    })
+                    return
+                }
+
+                newImageFileName = uploadResponse.data.file_name;
             }
 
 
             //?create menggunakan grpc 
-            await createProductApi.callApi(getProductClient().createProduct({
+            await editProductApi.callApi(getProductClient().editProduct({
+                id: id ?? "",
                 description: values.description ?? "",
-                imageFileName: uploadResponse.data.file_name,
+                imageFileName: newImageFileName || (values.imageUrl?.split('/').pop() ?? ""), //?mengambil nama file dari url (misal: http://localhost:4000/product/kursi.jpg => kursi.jpg)
                 name: values.name,
                 price: values.price,
             }));
 
             Swal.fire({
-                title: "Tambah Produk Sukses",
+                title: "Edit Produk Sukses",
                 icon: "success",
             });
 
@@ -100,8 +107,9 @@ function AdminEditProduct() {
                         <div className="col-md-8">
                             <ProductForm
                                 onSubmit={submitHandler}
-                                disabled={createProductApi.isLoading || uploadLoading|| detailApi.isLoading} //?jika salah satu sedang loading, maka disabled
+                                disabled={editProductApi.isLoading || uploadLoading || detailApi.isLoading} //?jika salah satu sedang loading, maka disabled
                                 defaultValues={defaultValues}
+                                isEdit
                             />
                         </div>
                     </div>
