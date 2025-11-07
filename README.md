@@ -103,3 +103,6 @@ npx protoc --ts_out ./pb --proto_path ./proto common/pagination.proto
 
 ### Integrasi Edit Produk Admin FE
 #### History Steps
+
+### Integrasi Highlight Produk FE
+#### History Steps
