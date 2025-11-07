@@ -27,7 +27,7 @@ function ProductHighlightSection(props: ProductHighlightSectionProps) {
                         </Link>
                     </div>
 
-                    <div className="col-12 col-md-4 col-lg-3 mb-5 mb-md-0">
+                    {/* <div className="col-12 col-md-4 col-lg-3 mb-5 mb-md-0">
                         <Link className="product-item" to="cart.html">
                             <img src="images/product-2.png" className="img-fluid product-thumbnail" />
                             <h3 className="product-title">Kruzo Aero Chair</h3>
@@ -49,7 +49,7 @@ function ProductHighlightSection(props: ProductHighlightSectionProps) {
                                 <img src="images/cross.svg" className="img-fluid" />
                             </span>
                         </Link>
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </div>
