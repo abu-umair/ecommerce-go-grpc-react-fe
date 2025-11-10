@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import Pagination from "../Pagination/Pagination"
 import useGrpcApi from "../../hooks/useGrpcApi";
-import { getProductClient } from "../../api/grpc/client";
+import { getCartClient, getProductClient } from "../../api/grpc/client";
 import { formatToIDR } from "../../utils/number";
+import Swal from "sweetalert2";
 
 
 interface Product {
@@ -14,6 +15,7 @@ interface Product {
 
 
 function ProductListSection() {
+    const addToCartApi = useGrpcApi();
     const listApi = useGrpcApi();
     const [currentPage, setCurrentPage] = useState(1);
     const [items, setItems] = useState<Product[]>([]);
@@ -47,6 +49,17 @@ function ProductListSection() {
 
     }, [currentPage]);
 
+    const addToCartHandler = async (productId: string) => {
+        await addToCartApi.callApi(getCartClient().addProductToCart({
+            productId,
+        }));
+
+        Swal.fire({
+            title:'Berhasil Menambahkan Produk ke Keranjang',
+            icon:'success'
+        })
+    }
+
 
     return (
         <div className="untree_co-section product-section before-footer-section">
@@ -60,7 +73,7 @@ function ProductListSection() {
                                 <h3 className="product-title">{item.name}</h3>
                                 <strong className="product-price">{formatToIDR(item.price)}</strong>
 
-                                <span className="icon-cross">
+                                <span className="icon-cross" onClick={() => addToCartHandler(item.id)}>
                                     <img src="images/cross.svg" className="img-fluid" />
                                 </span>
                             </a>
