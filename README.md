@@ -106,3 +106,6 @@ npx protoc --ts_out ./pb --proto_path ./proto common/pagination.proto
 
 ### Integrasi Highlight Produk FE
 #### History Steps
+
+### Integrasi API Tambah ke Cart FE
+#### History Steps
