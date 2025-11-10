@@ -109,3 +109,8 @@ npx protoc --ts_out ./pb --proto_path ./proto common/pagination.proto
 
 ### Integrasi API Tambah ke Cart FE
 #### History Steps
+1. Memindahkan file cart.proto dan pagination.proto dr BE
+2  generate protonya yang mengarah ke folder pb
+```bash
+npx protoc --ts_out ./pb --proto_path ./proto cart/cart.proto
+```
