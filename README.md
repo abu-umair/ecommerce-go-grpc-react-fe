@@ -120,3 +120,6 @@ npx protoc --ts_out ./pb --proto_path ./proto cart/cart.proto
 
 ### Integrasi API Hapus Cart FE
 #### History Steps
+
+### Integrasi API Edit Kuantitas Cart FE
+#### History Steps
