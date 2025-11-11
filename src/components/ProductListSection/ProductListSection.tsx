@@ -58,6 +58,11 @@ function ProductListSection() {
             navigate('/login');
             return
         }
+
+        if (addToCartApi.isLoading) { //?mencegah di add beberapa kali
+            return
+        }
+
         await addToCartApi.callApi(getCartClient().addProductToCart({
             productId,
         }));
