@@ -3,7 +3,7 @@ import PlainHeroSection from '../../components/PlainHeroSection/PlainHeroSection
 import { Link } from 'react-router-dom'
 import useGrpcApi from '../../hooks/useGrpcApi'
 import { getCartClient } from '../../api/grpc/client';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { formatToIDR } from '../../utils/number';
 
 interface CartItem {
@@ -22,6 +22,7 @@ function Cart() {
     const listApi = useGrpcApi();
     const [items, setItems] = useState<CartItem[]>([])//?utk menampung itemsnya
     const [totalPrice, setTotalPrice] = useState<number>(0)
+    const timeoutRef = useRef<Record<string, number>>({})
 
     const fetchData = async () => {
         const res = await listApi.callApi(getCartClient().listCart({}));
@@ -78,13 +79,19 @@ function Cart() {
             return
         }
 
-        //?update quantity, jika 0 maka otomatis dihapus
-        await updateQuantityApi.callApi(getCartClient().updateCartQuantity(
-            {
-                cartId: cartId,
-                newQuantity: BigInt(newQuantity)
-            }
-        ));
+        clearTimeout(timeoutRef.current[cartId]);
+
+
+        timeoutRef.current[cartId] = window.setTimeout(async () => {//?
+            //?update quantity, jika 0 maka otomatis dihapus
+            await updateQuantityApi.callApi(getCartClient().updateCartQuantity(
+                {
+                    cartId: cartId,
+                    newQuantity: BigInt(newQuantity)
+                }
+            ));
+        }, 1000)
+
     }
 
     return (
