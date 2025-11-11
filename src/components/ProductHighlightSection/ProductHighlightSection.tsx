@@ -78,7 +78,7 @@ function ProductHighlightSection(props: ProductHighlightSectionProps) {
                     {items.map(item => (
                         <div key={item.id} className="col-12 col-md-4 col-lg-3 mb-5 mb-md-0">
                             <div className="product-item">
-                                <img src="/images/product-1.png" className="img-fluid product-thumbnail" alt="product_image" />
+                                <img src={item.imageUrl} className="img-fluid product-thumbnail" alt="product_image" />
                                 <h3 className="product-title">{item.name}</h3>
                                 <strong className="product-price">{formatToIDR(item.price)}</strong>
                                 <span className="icon-cross" onClick={() => addToCartHandler(item.id)}>
