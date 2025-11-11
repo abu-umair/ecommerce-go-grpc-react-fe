@@ -19,12 +19,13 @@ interface CartItem {
 function Cart() {
     const listApi = useGrpcApi();
     const [items, setItems] = useState<CartItem[]>([])//?utk menampung itemsnya
+    const [totalPrice, setTotalPrice] = useState<number>(0)
 
     useEffect(() => {
         const fetchData = async () => {
             const res = await listApi.callApi(getCartClient().listCart({}));
 
-            setItems(res.response.items.map<CartItem>(item => ({
+            const newItems = res.response.items.map<CartItem>(item => ({ //?diubah agar bisa diambil oleh setTotalPrice (tidak perlu maping dari awal)
                 id: item.cartId,
                 product_id: item.productId,
                 product_image_url: item.productImageUrl,
@@ -32,8 +33,11 @@ function Cart() {
                 product_price: item.productPrice,
                 quantity: Number(item.quantity),
                 total: item.productPrice * Number(item.quantity),
-            })));
+            }));
 
+            setItems(newItems);
+
+            setTotalPrice(newItems.reduce<number>((currentValue, item) => currentValue + item.total, 0));//?menghitung total harga semua item di keranjang (newItems),
         }
 
         fetchData();
@@ -135,7 +139,7 @@ function Cart() {
                                             <span className="text-black">Subtotal</span>
                                         </div>
                                         <div className="col-md-6 text-right">
-                                            <strong className="text-black">Rp3.450.000</strong>
+                                            <strong className="text-black">{formatToIDR(totalPrice)}</strong>
                                         </div>
                                     </div>
                                     <div className="row mb-5">
@@ -143,7 +147,7 @@ function Cart() {
                                             <span className="text-black">Total</span>
                                         </div>
                                         <div className="col-md-6 text-right">
-                                            <strong className="text-black">Rp3.450.000</strong>
+                                            <strong className="text-black">{formatToIDR(totalPrice)}</strong>
                                         </div>
                                     </div>
 
