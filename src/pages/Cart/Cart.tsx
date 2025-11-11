@@ -89,29 +89,7 @@ function Cart() {
                                         </tr>
                                     ))}
 
-                                    {/* <tr>
-                                            <td className="product-thumbnail">
-                                                <img src="images/product-2.png" alt="Image" className="img-fluid" />
-                                            </td>
-                                            <td className="product-name">
-                                                <h2 className="h5 text-black">Produk 2</h2>
-                                            </td>
-                                            <td>Rp735.000</td>
-                                            <td>
-                                                <div className="input-group mb-3 d-flex align-items-center quantity-container" style={{ maxWidth: 120 }}>
-                                                    <div className="input-group-prepend">
-                                                        <button className="btn btn-outline-black decrease" type="button">-</button>
-                                                    </div>
-                                                    <input type="text" className="form-control text-center quantity-amount" value="1" placeholder="" aria-label="Example text with button addon" aria-describedby="button-addon1" />
-                                                    <div className="input-group-append">
-                                                        <button className="btn btn-outline-black increase" type="button">+</button>
-                                                    </div>
-                                                </div>
-
-                                            </td>
-                                            <td>Rp735.000</td>
-                                            <td><a href="#" className="btn btn-black btn-sm">X</a></td>
-                                        </tr> */}
+                                    
                                 </tbody>
                             </table>
                         </div>
