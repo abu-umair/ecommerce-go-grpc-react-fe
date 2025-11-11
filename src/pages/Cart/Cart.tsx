@@ -17,31 +17,41 @@ interface CartItem {
 }
 
 function Cart() {
+    const deleteApi = useGrpcApi();
     const listApi = useGrpcApi();
     const [items, setItems] = useState<CartItem[]>([])//?utk menampung itemsnya
     const [totalPrice, setTotalPrice] = useState<number>(0)
 
+    const fetchData = async () => {
+        const res = await listApi.callApi(getCartClient().listCart({}));
+
+        const newItems = res.response.items.map<CartItem>(item => ({ //?diubah agar bisa diambil oleh setTotalPrice (tidak perlu maping dari awal)
+            id: item.cartId,
+            product_id: item.productId,
+            product_image_url: item.productImageUrl,
+            product_name: item.productName,
+            product_price: item.productPrice,
+            quantity: Number(item.quantity),
+            total: item.productPrice * Number(item.quantity),
+        }));
+
+        setItems(newItems);
+
+        setTotalPrice(newItems.reduce<number>((currentValue, item) => currentValue + item.total, 0));//?menghitung total harga semua item di keranjang (newItems),
+    }
+
     useEffect(() => {
-        const fetchData = async () => {
-            const res = await listApi.callApi(getCartClient().listCart({}));
-
-            const newItems = res.response.items.map<CartItem>(item => ({ //?diubah agar bisa diambil oleh setTotalPrice (tidak perlu maping dari awal)
-                id: item.cartId,
-                product_id: item.productId,
-                product_image_url: item.productImageUrl,
-                product_name: item.productName,
-                product_price: item.productPrice,
-                quantity: Number(item.quantity),
-                total: item.productPrice * Number(item.quantity),
-            }));
-
-            setItems(newItems);
-
-            setTotalPrice(newItems.reduce<number>((currentValue, item) => currentValue + item.total, 0));//?menghitung total harga semua item di keranjang (newItems),
-        }
 
         fetchData();
     }, []);
+
+    const deleteCartItemHandler = async (cartId: string) => {
+        await deleteApi.callApi(getCartClient().deleteCart({
+            cartId: cartId
+        }));
+
+        await fetchData();//?auto refresh listnya
+    }
 
     return (
         <>
@@ -85,11 +95,11 @@ function Cart() {
 
                                             </td>
                                             <td>{formatToIDR(item.total)}</td>
-                                            <td><a href="#" className="btn btn-black btn-sm">X</a></td>
+                                            <td><div className="btn btn-black btn-sm" onClick={() => deleteCartItemHandler(item.id)}>X</div></td>
                                         </tr>
                                     ))}
 
-                                    
+
                                 </tbody>
                             </table>
                         </div>
