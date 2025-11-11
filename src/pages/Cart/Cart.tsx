@@ -17,6 +17,7 @@ interface CartItem {
 }
 
 function Cart() {
+    const updateQuantityApi = useGrpcApi();
     const deleteApi = useGrpcApi();
     const listApi = useGrpcApi();
     const [items, setItems] = useState<CartItem[]>([])//?utk menampung itemsnya
@@ -54,9 +55,10 @@ function Cart() {
     }
 
     const updateCartQuantityHandler = async (cartId: string, action: "increment" | "decrement") => {
-        const newItems: CartItem[] = items.map(item => {
+        let newQuantity = 0;
+        let newItems: CartItem[] = items.map(item => {
             if (item.id === cartId) {
-                const newQuantity: number = action == "decrement" ? item.quantity - 1 : item.quantity + 1
+                newQuantity = action == "decrement" ? item.quantity - 1 : item.quantity + 1
 
                 return {
                     ...item,
@@ -67,9 +69,22 @@ function Cart() {
 
             return item;
         });
+        newItems = newItems.filter(item => item.quantity > 0);//?jika quantity = 0, maka dihapus
 
         setItems(newItems);
         setTotalPrice(newItems.reduce<number>((currentValue, item) => currentValue + item.total, 0));
+
+        if (newQuantity < 0) {
+            return
+        }
+
+        //?update quantity, jika 0 maka otomatis dihapus
+        await updateQuantityApi.callApi(getCartClient().updateCartQuantity(
+            {
+                cartId: cartId,
+                newQuantity: BigInt(newQuantity)
+            }
+        ));
     }
 
     return (
