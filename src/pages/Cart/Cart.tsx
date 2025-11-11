@@ -80,9 +80,7 @@ function Cart() {
                     <div className="row">
                         <div className="col-md-6">
                             <div className="row mb-5">
-                                <div className="col-md-6 mb-3 mb-md-0">
-                                    <button className="btn btn-black btn-sm btn-block">Perbarui Keranjang</button>
-                                </div>
+                                
                                 <div className="col-md-6">
                                     <Link to="/shop"><button className="btn btn-outline-black btn-sm btn-block">Lanjut Belanja</button></Link>
                                 </div>
