@@ -55,8 +55,8 @@ function ProductListSection() {
         }));
 
         Swal.fire({
-            title:'Berhasil Menambahkan Produk ke Keranjang',
-            icon:'success'
+            title: 'Berhasil Menambahkan Produk ke Keranjang',
+            icon: 'success'
         })
     }
 
@@ -68,7 +68,7 @@ function ProductListSection() {
 
                     {items.map(item => (
                         <div key={item.id} className="col-12 col-md-4 col-lg-3 mb-5">
-                            <a className="product-item" href="#">
+                            <div className="product-item">
                                 <img src={item.imageUrl} className="img-fluid product-thumbnail" />
                                 <h3 className="product-title">{item.name}</h3>
                                 <strong className="product-price">{formatToIDR(item.price)}</strong>
@@ -76,7 +76,7 @@ function ProductListSection() {
                                 <span className="icon-cross" onClick={() => addToCartHandler(item.id)}>
                                     <img src="images/cross.svg" className="img-fluid" />
                                 </span>
-                            </a>
+                            </div>
                         </div>
 
                     ))}
