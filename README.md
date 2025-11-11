@@ -123,3 +123,4 @@ npx protoc --ts_out ./pb --proto_path ./proto cart/cart.proto
 
 ### Integrasi API Edit Kuantitas Cart FE
 #### History Steps
+1. ketika Quantity 0, maka dihapus di DB, karena ada script Go yang telah mengaturnya (cart_service.go, pada func 'UpdateCartQuantity')
