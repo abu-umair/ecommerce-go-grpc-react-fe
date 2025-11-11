@@ -53,6 +53,25 @@ function Cart() {
         await fetchData();//?auto refresh listnya
     }
 
+    const updateCartQuantityHandler = async (cartId: string, action: "increment" | "decrement") => {
+        const newItems: CartItem[] = items.map(item => {
+            if (item.id === cartId) {
+                const newQuantity: number = action == "decrement" ? item.quantity - 1 : item.quantity + 1
+
+                return {
+                    ...item,
+                    quantity: newQuantity,
+                    total: item.product_price * newQuantity
+                }
+            }
+
+            return item;
+        });
+
+        setItems(newItems);
+        setTotalPrice(newItems.reduce<number>((currentValue, item) => currentValue + item.total, 0));
+    }
+
     return (
         <>
             <PlainHeroSection title='Keranjang Belanja' />
@@ -87,11 +106,17 @@ function Cart() {
                                                 <td>
                                                     <div className="input-group mb-3 d-flex align-items-center quantity-container" style={{ maxWidth: 120 }}>
                                                         <div className="input-group-prepend">
-                                                            <button className="btn btn-outline-black decrease" type="button">-</button>
+                                                            <button
+                                                                className="btn btn-outline-black decrease"
+                                                                type="button"
+                                                                onClick={() => updateCartQuantityHandler(item.id, 'decrement')}>-</button>
                                                         </div>
                                                         <input type="text" className="form-control text-center quantity-amount" value={item.quantity} placeholder="" disabled />
                                                         <div className="input-group-append">
-                                                            <button className="btn btn-outline-black increase" type="button">+</button>
+                                                            <button
+                                                                className="btn btn-outline-black increase"
+                                                                type="button"
+                                                                onClick={() => updateCartQuantityHandler(item.id, 'increment')}>+</button>
                                                         </div>
                                                     </div>
 
