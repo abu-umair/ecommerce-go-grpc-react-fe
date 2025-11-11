@@ -1,8 +1,10 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import useGrpcApi from '../../hooks/useGrpcApi';
 import { useEffect, useState } from 'react';
-import { getProductClient } from '../../api/grpc/client';
+import { getCartClient, getProductClient } from '../../api/grpc/client';
 import { formatToIDR } from '../../utils/number';
+import { useAuthStore } from '../../store/auth';
+import Swal from 'sweetalert2';
 
 
 interface Product {
@@ -17,8 +19,12 @@ interface ProductHighlightSectionProps {
 }
 
 function ProductHighlightSection(props: ProductHighlightSectionProps) {
+    const isLoggedIn = useAuthStore(state => state.isLoggedIn);
+    const addToCartApi = useGrpcApi();
     const [items, setItems] = useState<Product[]>([]);
     const productApi = useGrpcApi();
+    const navigate = useNavigate();
+
 
     useEffect(() => {
 
@@ -38,6 +44,26 @@ function ProductHighlightSection(props: ProductHighlightSectionProps) {
 
     }, [])
 
+    const addToCartHandler = async (productId: string) => {
+        if (!isLoggedIn) {
+            navigate('/login');
+            return
+        }
+
+        if (addToCartApi.isLoading) { //?mencegah di add beberapa kali
+            return
+        }
+
+        await addToCartApi.callApi(getCartClient().addProductToCart({
+            productId,
+        }));
+
+        Swal.fire({
+            title: 'Berhasil Menambahkan Produk ke Keranjang',
+            icon: 'success'
+        })
+    }
+
     return (
         <div className={`product-section ${props.beforeFooter ? 'before-footer-section' : ''}`}>
             <div className="container">
@@ -51,14 +77,14 @@ function ProductHighlightSection(props: ProductHighlightSectionProps) {
                     {/* Product Items */}
                     {items.map(item => (
                         <div key={item.id} className="col-12 col-md-4 col-lg-3 mb-5 mb-md-0">
-                            <Link className="product-item" to="/cart">
+                            <div className="product-item">
                                 <img src="/images/product-1.png" className="img-fluid product-thumbnail" alt="product_image" />
                                 <h3 className="product-title">{item.name}</h3>
                                 <strong className="product-price">{formatToIDR(item.price)}</strong>
-                                <span className="icon-cross">
+                                <span className="icon-cross" onClick={() => addToCartHandler(item.id)}>
                                     <img src="/images/cross.svg" className="img-fluid" alt="Cross" />
                                 </span>
-                            </Link>
+                            </div>
                         </div>
 
                     ))}
