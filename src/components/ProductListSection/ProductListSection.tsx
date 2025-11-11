@@ -4,6 +4,8 @@ import useGrpcApi from "../../hooks/useGrpcApi";
 import { getCartClient, getProductClient } from "../../api/grpc/client";
 import { formatToIDR } from "../../utils/number";
 import Swal from "sweetalert2";
+import { useAuthStore } from "../../store/auth";
+import { useNavigate } from "react-router-dom";
 
 
 interface Product {
@@ -15,11 +17,13 @@ interface Product {
 
 
 function ProductListSection() {
+    const isLoggedIn = useAuthStore(state => state.isLoggedIn);
     const addToCartApi = useGrpcApi();
     const listApi = useGrpcApi();
     const [currentPage, setCurrentPage] = useState(1);
     const [items, setItems] = useState<Product[]>([]);
     const [totalPages, setTotalPages] = useState<number>(0);
+    const navigate = useNavigate();
 
     const handlePageChange = (page: number) => {
         setCurrentPage(page);
@@ -50,6 +54,10 @@ function ProductListSection() {
     }, [currentPage]);
 
     const addToCartHandler = async (productId: string) => {
+        if (!isLoggedIn) {
+            navigate('/login');
+            return
+        }
         await addToCartApi.callApi(getCartClient().addProductToCart({
             productId,
         }));
