@@ -114,3 +114,6 @@ npx protoc --ts_out ./pb --proto_path ./proto common/pagination.proto
 ```bash
 npx protoc --ts_out ./pb --proto_path ./proto cart/cart.proto
 ```
+
+### Integrasi API List Item di Cart FE
+#### History Steps
