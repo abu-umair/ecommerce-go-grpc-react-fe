@@ -7,6 +7,8 @@ import FormInput from '../../components/FormInput/FormInput';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useAuthStore } from '../../store/auth';
+import useGrpcApi from '../../hooks/useGrpcApi';
+import { getOrderClient } from '../../api/grpc/client';
 
 const checkoutSchema = yup.object().shape({
     fullName: yup.string().required('Nama lengkap wajib diisi'),
@@ -22,10 +24,11 @@ interface CheckoutFormValues {
 }
 
 function Checkout() {
+    const submitApi = useGrpcApi();
     const authFullName = useAuthStore(state => state.jwtPayload?.full_name ?? "");
     const form = useForm<CheckoutFormValues>({
         resolver: yupResolver(checkoutSchema),
-        defaultValues:{
+        defaultValues: {
             fullName: authFullName,
         }
     })
@@ -35,8 +38,19 @@ function Checkout() {
     const totalPrice = checkoutState?.total ?? 0;
 
     const submitHandler = () => {
-        form.handleSubmit((values: CheckoutFormValues) => {
-            console.log(values);
+        form.handleSubmit(async (values: CheckoutFormValues) => {
+            // console.log(values);
+            const res = await submitApi.callApi(getOrderClient().createOrder({
+                address: values.address,
+                fullName: values.fullName,
+                notes: values.notes ?? "",
+                phoneNumber: values.phoneNumber,
+                products: products.map(product => ({
+                    id: product.id,
+                    quantity: BigInt(product.quantity),
+                }))
+            }));
+            console.log(res);
         })(); //?form.handleSubmit adl function (bkn value atau apapun) jadi dibuat 2x pemanggilan
     }
 
