@@ -1,6 +1,6 @@
 import ProductHighlightSection from '../../components/ProductHighlightSection/ProductHighlightSection'
 import PlainHeroSection from '../../components/PlainHeroSection/PlainHeroSection'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import useGrpcApi from '../../hooks/useGrpcApi'
 import { getCartClient } from '../../api/grpc/client';
 import { useEffect, useRef, useState } from 'react';
@@ -16,7 +16,20 @@ interface CartItem {
     total: number;
 }
 
+interface CartCheckoutState {
+    total: number;
+    products: {
+        id: string;
+        name: string;
+        price: number;
+        quantity: number;
+        total: number;
+    }[];
+    cartIds: string[];
+}
+
 function Cart() {
+    const navigate = useNavigate();
     const updateQuantityApi = useGrpcApi();
     const deleteApi = useGrpcApi();
     const listApi = useGrpcApi();
@@ -92,6 +105,25 @@ function Cart() {
             ));
         }, 1000)
 
+    }
+
+    const checkoutHandler = () => {
+        const checkoutState: CartCheckoutState = {
+            cartIds: items.map(item => item.id),
+            products: items.map(item => ({
+                id: item.id,
+                name: item.product_name,
+                price: item.product_price,
+                quantity: item.quantity,
+                total: item.total,
+            })),
+            total: totalPrice,
+        }
+
+        navigate('/checkout', {
+            state: checkoutState //?bermanfaat buat passing data 'checkoutState' ke halaman checkout
+
+        });
     }
 
     return (
@@ -197,9 +229,10 @@ function Cart() {
                                     <div className="row">
                                         <div className="col-md-12">
                                             {items.length > 0 && (
-                                                <Link to="/checkout">
-                                                    <button className="btn btn-black btn-lg py-3 btn-block">Lanjutkan ke Pembayaran</button>
-                                                </Link>
+                                                <button //?menggnakan button(action) disini bukan Link
+                                                    className="btn btn-black btn-lg py-3 btn-block"
+                                                    onClick={checkoutHandler}
+                                                >Lanjutkan ke Pembayaran</button>
                                             )}
 
                                             {items.length === 0 && (

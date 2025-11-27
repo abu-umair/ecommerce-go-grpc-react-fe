@@ -127,3 +127,7 @@ npx protoc --ts_out ./pb --proto_path ./proto cart/cart.proto
 
 ### Optimasi Edit Kuantitas Cart FE
 #### History Steps
+
+
+### Navigasi Halaman Checkout FE
+#### History Steps
