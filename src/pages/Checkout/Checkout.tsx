@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form';
 import FormInput from '../../components/FormInput/FormInput';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useAuthStore } from '../../store/auth';
 
 const checkoutSchema = yup.object().shape({
     fullName: yup.string().required('Nama lengkap wajib diisi'),
@@ -21,8 +22,12 @@ interface CheckoutFormValues {
 }
 
 function Checkout() {
+    const authFullName = useAuthStore(state => state.jwtPayload?.full_name ?? "");
     const form = useForm<CheckoutFormValues>({
         resolver: yupResolver(checkoutSchema),
+        defaultValues:{
+            fullName: authFullName,
+        }
     })
     const location = useLocation();
     const checkoutState = location.state as CartCheckoutState | null;
