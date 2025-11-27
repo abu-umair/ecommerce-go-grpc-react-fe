@@ -46,25 +46,41 @@ function Checkout() {
 
                                 <div className="form-group row">
                                     <div className="col-md-12">
-                                        <label htmlFor="c_address" className="text-black">Alamat <span
-                                            className="text-danger">*</span></label>
-                                        <input type="text" className="form-control" id="c_address" name="c_address"
-                                            placeholder="Alamat Jalan" />
+                                        <FormInput
+                                            errors={form.formState.errors}
+                                            name='address'
+                                            register={form.register}
+                                            type='text'
+                                            labelRequired
+                                            label='Alamat'
+                                            placeholder='Alamat'
+                                        />
                                     </div>
                                 </div>
 
                                 <div className="form-group row">
                                     <div className="col-md-12">
-                                        <label htmlFor="c_phone" className="text-black">Nomor Telepon <span className="text-danger">*</span></label>
-                                        <input type="text" className="form-control" id="c_phone" name="c_phone"
-                                            placeholder="Nomor Telepon" />
+                                        <FormInput
+                                            errors={form.formState.errors}
+                                            name='phoneNumber'
+                                            register={form.register}
+                                            type='text'
+                                            labelRequired
+                                            label='Nomor Telepon'
+                                            placeholder='Nomor Telepon'
+                                        />
                                     </div>
                                 </div>
 
                                 <div className="form-group">
-                                    <label htmlFor="c_order_notes" className="text-black">Catatan Pesanan</label>
-                                    <textarea name="c_order_notes" id="c_order_notes" cols={30} rows={5} className="form-control"
-                                        placeholder="Tulis catatan Anda di sini..."></textarea>
+                                    <FormInput
+                                        errors={form.formState.errors}
+                                        name='notes'
+                                        register={form.register}
+                                        type='textarea'
+                                        label='Catatan Pesanan'
+                                        placeholder='Tulis Catatan Pesanan Disini'
+                                    />
                                 </div>
 
                             </div>
