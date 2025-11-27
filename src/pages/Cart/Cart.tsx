@@ -5,6 +5,7 @@ import useGrpcApi from '../../hooks/useGrpcApi'
 import { getCartClient } from '../../api/grpc/client';
 import { useEffect, useRef, useState } from 'react';
 import { formatToIDR } from '../../utils/number';
+import { CartCheckoutState } from '../../types/cart';
 
 interface CartItem {
     id: string;
@@ -16,17 +17,7 @@ interface CartItem {
     total: number;
 }
 
-interface CartCheckoutState {
-    total: number;
-    products: {
-        id: string;
-        name: string;
-        price: number;
-        quantity: number;
-        total: number;
-    }[];
-    cartIds: string[];
-}
+//?memindahkan ke folder types, karena bakal digunakan disini dan di checkout.tsx
 
 function Cart() {
     const navigate = useNavigate();
