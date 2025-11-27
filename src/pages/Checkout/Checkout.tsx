@@ -2,8 +2,19 @@ import { useLocation } from 'react-router-dom';
 import PlainHeroSection from '../../components/PlainHeroSection/PlainHeroSection'
 import { CartCheckoutState } from '../../types/cart';
 import { formatToIDR } from '../../utils/number';
+import { useForm } from 'react-hook-form';
+import FormInput from '../../components/FormInput/FormInput';
+
+
+interface CheckoutFormValues {
+    fullName: string;
+    address: string;
+    phoneNumber: string;
+    notes?: string;
+}
 
 function Checkout() {
+    const form = useForm<CheckoutFormValues>()
     const location = useLocation();
     const checkoutState = location.state as CartCheckoutState | null;
     const products = checkoutState?.products ?? [];
@@ -21,10 +32,14 @@ function Checkout() {
                             <div className="p-3 p-lg-5 border bg-white">
                                 <div className="form-group row">
                                     <div className="col-md-12">
-                                        <label htmlFor="c_fname" className="text-black">Nama Lengkap <span
-                                            className="text-danger">*</span></label>
-                                        <input type="text" className="form-control" id="c_fname" name="c_fname"
-                                            placeholder="Nama Lengkap"
+                                        <FormInput
+                                            errors={form.formState.errors}
+                                            name='fullName'
+                                            register={form.register}
+                                            type='text'
+                                            labelRequired
+                                            label='Nama Lengkap'
+                                            placeholder='Nama Lengkap'
                                         />
                                     </div>
                                 </div>
@@ -67,11 +82,11 @@ function Checkout() {
                                             </thead>
                                             <tbody>
                                                 {products.map(product => (
-                                                <tr key={product.id}>
-                                                    <td>{product.name} <strong className="mx-2">x</strong> {product.quantity}</td>
-                                                    <td>{formatToIDR(product.price)}</td>
-                                                </tr>
-                                                    
+                                                    <tr key={product.id}>
+                                                        <td>{product.name} <strong className="mx-2">x</strong> {product.quantity}</td>
+                                                        <td>{formatToIDR(product.price)}</td>
+                                                    </tr>
+
                                                 ))}
                                                 {/* <tr>
                                                     <td>Produk 2 <strong className="mx-2">x</strong> 1</td>
