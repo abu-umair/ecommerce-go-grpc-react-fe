@@ -135,3 +135,8 @@ npx protoc --ts_out ./pb --proto_path ./proto cart/cart.proto
 
 ### Integrasi API Create Order / Checkout 
 #### History Steps
+1. Memindahkan file order.proto dr BE
+2  generate protonya yang mengarah ke folder pb
+```bash
+npx protoc --ts_out ./pb --proto_path ./proto order/order.proto
+```
