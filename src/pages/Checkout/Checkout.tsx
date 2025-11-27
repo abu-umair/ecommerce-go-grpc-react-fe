@@ -4,7 +4,14 @@ import { CartCheckoutState } from '../../types/cart';
 import { formatToIDR } from '../../utils/number';
 import { useForm } from 'react-hook-form';
 import FormInput from '../../components/FormInput/FormInput';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
 
+const checkoutSchema = yup.object().shape({
+    fullName: yup.string().required('Nama lengkap wajib diisi'),
+    address: yup.string().required('Alamat wajib diisi'),
+    phoneNumber: yup.string().required('Nomor telepon wajib diisi'),
+})
 
 interface CheckoutFormValues {
     fullName: string;
@@ -14,11 +21,19 @@ interface CheckoutFormValues {
 }
 
 function Checkout() {
-    const form = useForm<CheckoutFormValues>()
+    const form = useForm<CheckoutFormValues>({
+        resolver: yupResolver(checkoutSchema),
+    })
     const location = useLocation();
     const checkoutState = location.state as CartCheckoutState | null;
     const products = checkoutState?.products ?? [];
     const totalPrice = checkoutState?.total ?? 0;
+
+    const submitHandler = () => {
+        form.handleSubmit((values: CheckoutFormValues) => {
+            console.log(values);
+        })(); //?form.handleSubmit adl function (bkn value atau apapun) jadi dibuat 2x pemanggilan
+    }
 
     return (
         <>
@@ -120,7 +135,9 @@ function Checkout() {
                                         </table>
 
                                         <div className="form-group">
-                                            <button className="btn btn-black btn-lg py-3 btn-block">Buat Pesanan</button>
+                                            <button
+                                                onClick={submitHandler}
+                                                className="btn btn-black btn-lg py-3 btn-block">Buat Pesanan</button>
                                         </div>
 
                                     </div>
