@@ -39,11 +39,10 @@ const useGrpcApi = () => {
             return res;
         } catch (e) {
             if (e instanceof RpcError) {
-                if (args?.useDefaultAuthError ?? true) {
-                    console.log(e);
+                if (e.code === 'UNAUTHENTICATED' || e.code === 'INTERNAL') {
+                    if (args?.useDefaultAuthError ?? true) {
+                        console.log(e.code);
 
-                    // if (e.code === 'UNAUTHENTICATED' || e.code === 'INTERNAL') {
-                    if (e.code === 'UNAUTHENTICATED') {
                         logoutUser();
                         localStorage.removeItem('access_token');
 
