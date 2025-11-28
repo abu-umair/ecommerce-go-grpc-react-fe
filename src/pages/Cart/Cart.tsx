@@ -102,7 +102,7 @@ function Cart() {
         const checkoutState: CartCheckoutState = {
             cartIds: items.map(item => item.id),
             products: items.map(item => ({
-                id: item.id,
+                id: item.product_id,
                 name: item.product_name,
                 price: item.product_price,
                 quantity: item.quantity,
