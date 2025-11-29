@@ -1,7 +1,7 @@
 import { Link, useParams } from 'react-router-dom';
 import PlainHeroSection from '../../components/PlainHeroSection/PlainHeroSection';
 import useGrpcApi from '../../hooks/useGrpcApi';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { getOrderClient } from '../../api/grpc/client';
 import { convertTimestampToDate } from '../../utils/date';
 import { formatToIDR } from '../../utils/number';
@@ -22,7 +22,7 @@ function CheckoutSuccess() {
 
             setNumber(res.response.number)
             setTotalPrice(res.response.total)
-            setExpiredAt(convertTimestampToDate(res.response.expiredAt))
+            setExpiredAt(convertTimestampToDate(res.response.expiredAt) ?? "")
             setInvoiceUrl(res.response.xenditInvoiceUrl)
         }
 
