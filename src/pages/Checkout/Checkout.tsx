@@ -9,6 +9,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useAuthStore } from '../../store/auth';
 import useGrpcApi from '../../hooks/useGrpcApi';
 import { getCartClient, getOrderClient } from '../../api/grpc/client';
+import { useEffect } from 'react';
 
 const checkoutSchema = yup.object().shape({
     fullName: yup.string().required('Nama lengkap wajib diisi'),
@@ -42,6 +43,12 @@ function Checkout() {
     const cartIds = checkoutState?.cartIds ?? [];
     const submitLoading = submitApi.isLoading || deleteCartApi.isLoading;
 
+    useEffect(() => {
+        if (!checkoutState) { //?jika state checkoutState di halaman cart.tsx tidak ada
+            navigate("/cart", { state: null });//?kembali ke halaman cart dan hapus state (mencegah customer masuk tidak dihalaman cart)
+        }
+    }, [])
+
     const submitHandler = () => {
         form.handleSubmit(async (values: CheckoutFormValues) => {
             // console.log(values);
@@ -58,7 +65,7 @@ function Checkout() {
             console.log(res);
             // menghapus semua item cart berdasarkan daftar cartIds
             await Promise.all(cartIds.map(id => deleteCartApi.callApi(getCartClient().deleteCart({ cartId: id }))));
-            navigate("/checkout/success");
+            navigate("/checkout/success", { state: null });//?membuat state null agar tidak ada data di halaman checkout/success
         })(); //?form.handleSubmit adl function (bkn value atau apapun) jadi dibuat 2x pemanggilan
     }
 
