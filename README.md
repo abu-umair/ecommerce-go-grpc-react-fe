@@ -140,3 +140,7 @@ npx protoc --ts_out ./pb --proto_path ./proto cart/cart.proto
 ```bash
 npx protoc --ts_out ./pb --proto_path ./proto order/order.proto
 ```
+
+
+### Integrasi Halaman Sukses Checkout FE
+#### History Steps
