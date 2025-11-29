@@ -1,4 +1,4 @@
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import PlainHeroSection from '../../components/PlainHeroSection/PlainHeroSection'
 import { CartCheckoutState } from '../../types/cart';
 import { formatToIDR } from '../../utils/number';
@@ -8,7 +8,7 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useAuthStore } from '../../store/auth';
 import useGrpcApi from '../../hooks/useGrpcApi';
-import { getOrderClient } from '../../api/grpc/client';
+import { getCartClient, getOrderClient } from '../../api/grpc/client';
 
 const checkoutSchema = yup.object().shape({
     fullName: yup.string().required('Nama lengkap wajib diisi'),
@@ -24,7 +24,10 @@ interface CheckoutFormValues {
 }
 
 function Checkout() {
+    const navigate = useNavigate();
     const submitApi = useGrpcApi();
+    const deleteCartApi = useGrpcApi();
+
     const authFullName = useAuthStore(state => state.jwtPayload?.full_name ?? "");
     const form = useForm<CheckoutFormValues>({
         resolver: yupResolver(checkoutSchema),
@@ -36,6 +39,8 @@ function Checkout() {
     const checkoutState = location.state as CartCheckoutState | null;
     const products = checkoutState?.products ?? [];
     const totalPrice = checkoutState?.total ?? 0;
+    const cartIds = checkoutState?.cartIds ?? [];
+    const submitLoading = submitApi.isLoading || deleteCartApi.isLoading;
 
     const submitHandler = () => {
         form.handleSubmit(async (values: CheckoutFormValues) => {
@@ -51,6 +56,9 @@ function Checkout() {
                 }))
             }));
             console.log(res);
+            // menghapus semua item cart berdasarkan daftar cartIds
+            await Promise.all(cartIds.map(id => deleteCartApi.callApi(getCartClient().deleteCart({ cartId: id }))));
+            navigate("/checkout/success");
         })(); //?form.handleSubmit adl function (bkn value atau apapun) jadi dibuat 2x pemanggilan
     }
 
@@ -74,6 +82,7 @@ function Checkout() {
                                             labelRequired
                                             label='Nama Lengkap'
                                             placeholder='Nama Lengkap'
+                                            disabled={submitLoading}
                                         />
                                     </div>
                                 </div>
@@ -88,6 +97,7 @@ function Checkout() {
                                             labelRequired
                                             label='Alamat'
                                             placeholder='Alamat'
+                                            disabled={submitLoading}
                                         />
                                     </div>
                                 </div>
@@ -102,6 +112,7 @@ function Checkout() {
                                             labelRequired
                                             label='Nomor Telepon'
                                             placeholder='Nomor Telepon'
+                                            disabled={submitLoading}
                                         />
                                     </div>
                                 </div>
@@ -114,6 +125,7 @@ function Checkout() {
                                         type='textarea'
                                         label='Catatan Pesanan'
                                         placeholder='Tulis Catatan Pesanan Disini'
+                                        disabled={submitLoading}
                                     />
                                 </div>
 
@@ -155,6 +167,7 @@ function Checkout() {
 
                                         <div className="form-group">
                                             <button
+                                                disabled={submitLoading}
                                                 onClick={submitHandler}
                                                 className="btn btn-black btn-lg py-3 btn-block">Buat Pesanan</button>
                                         </div>
