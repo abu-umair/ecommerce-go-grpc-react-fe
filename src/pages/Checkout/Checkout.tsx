@@ -65,7 +65,7 @@ function Checkout() {
             console.log(res);
             // menghapus semua item cart berdasarkan daftar cartIds
             await Promise.all(cartIds.map(id => deleteCartApi.callApi(getCartClient().deleteCart({ cartId: id }))));
-            navigate("/checkout/success", { replace:true });//?membuat state null agar tidak ada data di halaman checkout/success
+            navigate(`/checkout/${res.response.id}/success`, { replace:true });//?membuat state null agar tidak ada data di halaman checkout/success
         })(); //?form.handleSubmit adl function (bkn value atau apapun) jadi dibuat 2x pemanggilan
     }
 
