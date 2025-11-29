@@ -45,7 +45,7 @@ function Checkout() {
 
     useEffect(() => {
         if (!checkoutState) { //?jika state checkoutState di halaman cart.tsx tidak ada
-            navigate("/cart", { state: null });//?kembali ke halaman cart dan hapus state (mencegah customer masuk tidak dihalaman cart)
+            navigate("/cart", { replace:true });//?kembali ke halaman cart dan hapus state (mencegah customer masuk tidak dihalaman cart)
         }
     }, [])
 
@@ -65,7 +65,7 @@ function Checkout() {
             console.log(res);
             // menghapus semua item cart berdasarkan daftar cartIds
             await Promise.all(cartIds.map(id => deleteCartApi.callApi(getCartClient().deleteCart({ cartId: id }))));
-            navigate("/checkout/success", { state: null });//?membuat state null agar tidak ada data di halaman checkout/success
+            navigate("/checkout/success", { replace:true });//?membuat state null agar tidak ada data di halaman checkout/success
         })(); //?form.handleSubmit adl function (bkn value atau apapun) jadi dibuat 2x pemanggilan
     }
 
