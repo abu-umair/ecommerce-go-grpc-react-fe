@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { getOrderClient } from '../../api/grpc/client';
 import { convertTimestampToTime } from '../../utils/date';
 import { formatToIDR } from '../../utils/number';
+import { ORDER_STATUS_UNPAID } from '../../constants/order';
 
 function CheckoutSuccess() {
     const { id } = useParams();
@@ -60,7 +61,7 @@ function CheckoutSuccess() {
                                                 <strong className="text-black">{formatToIDR(totalPrice)}</strong>
                                             </div>
                                         </div>
-                                        {statusCode === "unpaid" && (
+                                        {statusCode === ORDER_STATUS_UNPAID && (
                                             <div className="py-2 border-bottom">
                                                 <div className="d-flex justify-content-between">
                                                     <span className="text-black">Batas waktu pembayaran:</span>
@@ -72,7 +73,7 @@ function CheckoutSuccess() {
                                 </div>
 
                                 <div className="text-center">
-                                    {statusCode === "unpaid" && (
+                                    {statusCode === ORDER_STATUS_UNPAID && (
                                         <a
                                             href={invoiceUrl}
                                             rel="noopener noreferrer"
