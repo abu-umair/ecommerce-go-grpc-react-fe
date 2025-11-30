@@ -13,6 +13,7 @@ function CheckoutSuccess() {
     const [totalPrice, setTotalPrice] = useState<number>(0)
     const [expiredAt, setExpiredAt] = useState<string>("")
     const [invoiceUrl, setInvoiceUrl] = useState<string>("")
+    const [statusCode, setStatusCode] = useState<string>("")
 
     useEffect(() => {
         const fetchData = async () => {
@@ -24,6 +25,7 @@ function CheckoutSuccess() {
             setTotalPrice(res.response.total)
             setExpiredAt(convertTimestampToDate(res.response.expiredAt) ?? "")
             setInvoiceUrl(res.response.xenditInvoiceUrl)
+            setStatusCode(res.response.orderStatusCode)
         }
 
         fetchData();
@@ -58,23 +60,27 @@ function CheckoutSuccess() {
                                                 <strong className="text-black">{formatToIDR(totalPrice)}</strong>
                                             </div>
                                         </div>
-                                        <div className="py-2 border-bottom">
-                                            <div className="d-flex justify-content-between">
-                                                <span className="text-black">Batas waktu pembayaran:</span>
-                                                <strong className="text-black">{expiredAt}</strong>
+                                        {statusCode === "unpaid" && (
+                                            <div className="py-2 border-bottom">
+                                                <div className="d-flex justify-content-between">
+                                                    <span className="text-black">Batas waktu pembayaran:</span>
+                                                    <strong className="text-black">{expiredAt}</strong>
+                                                </div>
                                             </div>
-                                        </div>
+                                        )}
                                     </div>
                                 </div>
 
                                 <div className="text-center">
-                                    <a
-                                        href={invoiceUrl}
-                                        rel="noopener noreferrer"
-                                        className="btn btn-primary mb-3"
-                                    >
-                                        Bayar Sekarang
-                                    </a>
+                                    {statusCode === "unpaid" && (
+                                        <a
+                                            href={invoiceUrl}
+                                            rel="noopener noreferrer"
+                                            className="btn btn-primary mb-3"
+                                        >
+                                            Bayar Sekarang
+                                        </a>
+                                    )}
                                     <div>
                                         <Link to="/shop" className="btn btn-secondary me-2">Lanjut Belanja</Link>
                                         <Link to="/profile/orders" className="btn btn-primary">Lihat Riwayat Pesanan</Link>
