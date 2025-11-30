@@ -13,7 +13,11 @@ interface OrderItem {
     date: string;
     total: number;
     statusCode: string;
-
+    products: {
+        id: string;
+        name: string;
+        quantity: number;
+    }[];
 }
 
 function OrderHistorySection() {
@@ -46,6 +50,11 @@ function OrderHistorySection() {
                 number: item.number,
                 statusCode: item.statusCode,
                 total: item.total,
+                products: item.products.map(product => ({
+                    id: product.id,
+                    name: product.name,
+                    quantity: Number(product.quantity),
+                })),
             })));
             setTotalPages(res.response.pagination?.totalItemCount ?? 0);
 
@@ -90,8 +99,9 @@ function OrderHistorySection() {
                                 <td>{item.number}</td>
                                 <td>{item.date}</td>
                                 <td>
-                                    <div>Kaos Top Up x 1</div>
-                                    <div>Kemeja Polo x 1</div>
+                                    {item.products.map(product => (
+                                        <div key={product.id}>{product.name} x {product.quantity}</div>
+                                    ))}
                                 </td>
                                 <td>{formatToIDR(item.total)}</td>
                                 <td><span className="badge bg-success">{item.statusCode}</span></td>
