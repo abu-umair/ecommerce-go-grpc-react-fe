@@ -50,10 +50,10 @@ function OrderHistorySection() {
 
 
     return (
-        <div className="p-4 p-lg-5 border bg-white">
+        <div className="p-4 p-lg-5 border bg-white admin-dashboard">
             <h2 className="h3 mb-3 text-black">Riwayat Pesanan</h2>
             <div className="table-responsive">
-                <table className="table site-block-order-table mb-5">
+                <table className="table site-blocks-table site-block-order-table mb-5">
                     <thead>
                         <tr>
                             <th>Nomor Pesanan</th>
