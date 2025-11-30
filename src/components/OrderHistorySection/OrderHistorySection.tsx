@@ -4,6 +4,8 @@ import useGrpcApi from "../../hooks/useGrpcApi";
 import { getOrderClient } from "../../api/grpc/client";
 import { convertTimestampToDate } from "../../utils/date";
 import { formatToIDR } from "../../utils/number";
+import SortableHeader from "../SortableHeader/SortableHeader";
+import useSortableHeader from "../../hooks/useSortableHeader";
 
 interface OrderItem {
     id: string;
@@ -16,6 +18,7 @@ interface OrderItem {
 
 function OrderHistorySection() {
     const listApi = useGrpcApi();
+    const { handleSort, sortConfig } = useSortableHeader();
     const [items, setItems] = useState<OrderItem[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState<number>(0);
@@ -30,7 +33,10 @@ function OrderHistorySection() {
                 pagination: {
                     currentPage: currentPage,
                     itemPerPage: 5,
-
+                    sort: sortConfig.direction ? {
+                        direction: sortConfig.direction,
+                        field: sortConfig.key
+                    } : undefined,
                 }
             }));
 
@@ -46,7 +52,7 @@ function OrderHistorySection() {
         }
 
         fetchData();
-    }, [currentPage])
+    }, [currentPage, sortConfig.direction, sortConfig.key]);
 
 
     return (
@@ -56,10 +62,25 @@ function OrderHistorySection() {
                 <table className="table site-blocks-table site-block-order-table mb-5">
                     <thead>
                         <tr>
-                            <th>Nomor Pesanan</th>
-                            <th>Tanggal</th>
+                            <SortableHeader
+                                currentSort={sortConfig}
+                                label="Nomor Pesanan"
+                                onSort={handleSort}
+                                sortKey="number"
+                            />
+                            <SortableHeader
+                                currentSort={sortConfig}
+                                label="Tanggal"
+                                onSort={handleSort}
+                                sortKey="created_at"
+                            />
                             <th>Barang</th>
-                            <th>Total</th>
+                            <SortableHeader
+                                currentSort={sortConfig}
+                                label="Total"
+                                onSort={handleSort}
+                                sortKey="total"
+                            />
                             <th>Status</th>
                         </tr>
                     </thead>
