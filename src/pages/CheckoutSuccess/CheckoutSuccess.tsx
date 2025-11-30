@@ -3,7 +3,7 @@ import PlainHeroSection from '../../components/PlainHeroSection/PlainHeroSection
 import useGrpcApi from '../../hooks/useGrpcApi';
 import { useEffect, useState } from 'react';
 import { getOrderClient } from '../../api/grpc/client';
-import { convertTimestampToDate } from '../../utils/date';
+import { convertTimestampToTime } from '../../utils/date';
 import { formatToIDR } from '../../utils/number';
 
 function CheckoutSuccess() {
@@ -23,7 +23,7 @@ function CheckoutSuccess() {
 
             setNumber(res.response.number)
             setTotalPrice(res.response.total)
-            setExpiredAt(convertTimestampToDate(res.response.expiredAt) ?? "")
+            setExpiredAt(convertTimestampToTime(res.response.expiredAt) ?? "")
             setInvoiceUrl(res.response.xenditInvoiceUrl)
             setStatusCode(res.response.orderStatusCode)
         }
