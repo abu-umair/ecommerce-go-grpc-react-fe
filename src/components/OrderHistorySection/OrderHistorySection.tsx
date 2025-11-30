@@ -18,7 +18,7 @@ function OrderHistorySection() {
     const listApi = useGrpcApi();
     const [items, setItems] = useState<OrderItem[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const totalPages = 5;
+    const [totalPages, setTotalPages] = useState<number>(0);
 
     const handlePageChange = (page: number) => {
         setCurrentPage(page);
@@ -41,6 +41,7 @@ function OrderHistorySection() {
                 statusCode: item.statusCode,
                 total: item.total,
             })));
+            setTotalPages(res.response.pagination?.totalItemCount ?? 0);
 
         }
 
