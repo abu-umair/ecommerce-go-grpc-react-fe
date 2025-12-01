@@ -6,6 +6,7 @@ import { convertTimestampToDate } from "../../utils/date";
 import { formatToIDR } from "../../utils/number";
 import SortableHeader from "../SortableHeader/SortableHeader";
 import useSortableHeader from "../../hooks/useSortableHeader";
+import OrderStatusBadge from "../OrderStatusBadge/OrderStatusBadge";
 
 interface OrderItem {
     id: string;
@@ -104,7 +105,7 @@ function OrderHistorySection() {
                                     ))}
                                 </td>
                                 <td>{formatToIDR(item.total)}</td>
-                                <td><span className="badge bg-success">{item.statusCode}</span></td>
+                                <td><OrderStatusBadge code={item.statusCode} /></td>
                             </tr>
                         ))}
                         {/* <tr>
