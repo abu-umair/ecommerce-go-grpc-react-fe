@@ -4,17 +4,20 @@ import { DetailOrderResponse } from "../../../pb/order/order";
 import { getOrderClient } from "../../api/grpc/client";
 import { useEffect, useState } from "react";
 import OrderStatusBadge from "../OrderStatusBadge/OrderStatusBadge";
-import { ORDER_STATUS_UNPAID } from "../../constants/order";
+import { ORDER_STATUS_CANCELLED, ORDER_STATUS_DONE, ORDER_STATUS_SHIPPED, ORDER_STATUS_UNPAID } from "../../constants/order";
 import { convertTimestampToDate } from "../../utils/date";
 import { formatToIDR } from "../../utils/number";
+import Swal from "sweetalert2";
 
 function OrderDetailSection() {
     const { id } = useParams();
     const detailApi = useGrpcApi();
+    const updateStatusApi = useGrpcApi();
     const [apiResponse, setApiResponse] = useState<DetailOrderResponse | null>(null);
     const items = apiResponse?.items ?? []; //?memberikan default array utk menghilangkan undifinednya
     const totalPrice = apiResponse?.total ?? 0;
     const orderStatusCode = apiResponse?.orderStatusCode ?? "";
+    const [newStatusCode, setNewStatusCode] = useState<string>("");
 
     const fetchData = async () => {
         const res = await detailApi.callApi(getOrderClient().detailOrder({ id: id ?? "" }));
@@ -24,6 +27,24 @@ function OrderDetailSection() {
     useEffect(() => {
         fetchData();
     }, []);
+
+    const updateStatusHandler = async () => {
+        console.log(newStatusCode);
+
+        await updateStatusApi.callApi(getOrderClient().updateOrderStatus({
+            newStatusCode: newStatusCode,
+            orderId: id ?? "",
+        }));
+
+        await Swal.fire({
+            icon: 'success',
+            title: "Status Order Berhasil Diperbarui"
+        });
+
+        fetchData();
+    }
+
+
     return (
         <div className="p-4 p-lg-5 border bg-white">
             <Link to="/profile/orders" className="d-inline-block mb-4">
@@ -53,15 +74,26 @@ function OrderDetailSection() {
                                 <a href={apiResponse?.xenditInvoiceUrl ?? ""}>(Bayar)</a>}
                         </p>
                         <p className="mb-2"><strong>Tanggal Pesanan:</strong> {convertTimestampToDate(apiResponse?.createdAt)}</p>
-                        <div className="mt-3">
-                            <select className="form-select mb-2">
-                                <option value="pending">Menunggu</option>
-                                <option value="processing">Diproses</option>
-                                <option value="shipped">Dikirim</option>
-                                <option value="delivered">Diterima</option>
-                            </select>
-                            <button className="btn btn-primary w-100">Perbarui Status</button>
-                        </div>
+                        {[ORDER_STATUS_UNPAID, ORDER_STATUS_SHIPPED].includes(orderStatusCode) &&
+                            <div className="mt-3">
+                                <select
+                                    className="form-select mb-2"
+                                    value={newStatusCode}
+                                    onChange={(e) => setNewStatusCode(e.target.value)}
+                                >
+                                    <option value="">-</option>
+                                    {orderStatusCode === ORDER_STATUS_UNPAID && <option value={ORDER_STATUS_CANCELLED}>Dibatalkan</option>}
+                                    {orderStatusCode === ORDER_STATUS_SHIPPED && <option value={ORDER_STATUS_DONE}>Selesai</option>}
+                                </select>
+                                <button
+                                    className="btn btn-primary w-100"
+                                    onClick={updateStatusHandler}
+                                    disabled={!newStatusCode || updateStatusApi.isLoading} //? button akan dosabled jika <option value="">-</option> atau loading
+                                >
+                                    Perbarui Status
+                                </button>
+                            </div>
+                        }
                     </div>
                 </div>
 
