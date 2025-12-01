@@ -3,6 +3,8 @@ import useGrpcApi from "../../hooks/useGrpcApi";
 import { DetailOrderResponse } from "../../../pb/order/order";
 import { getOrderClient } from "../../api/grpc/client";
 import { useEffect, useState } from "react";
+import OrderStatusBadge from "../OrderStatusBadge/OrderStatusBadge";
+import { ORDER_STATUS_UNPAID } from "../../constants/order";
 
 function OrderDetailSection() {
     const { id } = useParams();
@@ -40,7 +42,11 @@ function OrderDetailSection() {
                 <div className="col-md-6 mb-4">
                     <h3 className="h5 mb-3">Status Pesanan</h3>
                     <div className="p-3 border rounded">
-                        <p className="mb-2"><strong>Status Saat Ini:</strong> <span className="badge bg-success">Dikirim</span></p>
+                        <p className="mb-2"><strong>Status Saat Ini:</strong>
+                            <OrderStatusBadge code={apiResponse?.orderStatusCode ?? ""} />
+                            {apiResponse?.orderStatusCode === ORDER_STATUS_UNPAID &&
+                                <a href={apiResponse?.xenditInvoiceUrl ?? ""}>(Bayar)</a>}
+                        </p>
                         <p className="mb-2"><strong>Tanggal Pesanan:</strong> 20 Februari 2025</p>
                         <div className="mt-3">
                             <select className="form-select mb-2">
