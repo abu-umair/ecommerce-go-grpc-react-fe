@@ -152,3 +152,7 @@ npx protoc --ts_out ./pb --proto_path ./proto order/order.proto
 
 ### Integrasi Detail Order FE
 #### History Steps
+
+
+### Integrasi Update Status Order FE
+#### History Steps
