@@ -90,13 +90,13 @@ function OrderDetailSection() {
                                     <td>Rp120.000</td>
                                     <td>1</td>
                                     <td>Rp120.000</td>
-                                </tr> */}
+                                </tr> 
                                 <tr>
                                     <td>Celana Chino</td>
                                     <td>Rp150.000</td>
                                     <td>2</td>
                                     <td>Rp300.000</td>
-                                </tr>
+                                </tr>*/}
                                 <tr>
                                     <td colSpan={3} className="text-end"><strong>Subtotal</strong></td>
                                     <td>{formatToIDR(totalPrice)}</td>
