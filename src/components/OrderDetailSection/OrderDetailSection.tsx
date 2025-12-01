@@ -6,11 +6,13 @@ import { useEffect, useState } from "react";
 import OrderStatusBadge from "../OrderStatusBadge/OrderStatusBadge";
 import { ORDER_STATUS_UNPAID } from "../../constants/order";
 import { convertTimestampToDate } from "../../utils/date";
+import { formatToIDR } from "../../utils/number";
 
 function OrderDetailSection() {
     const { id } = useParams();
     const detailApi = useGrpcApi();
     const [apiResponse, setApiResponse] = useState<DetailOrderResponse | null>(null);
+    const items = apiResponse?.items ?? []; //?memberikan default array utk menghilangkan undifinednya
 
     const fetchData = async () => {
         const res = await detailApi.callApi(getOrderClient().detailOrder({ id: id ?? "" }));
@@ -74,12 +76,20 @@ function OrderDetailSection() {
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
+                                {items.map(item => (
+                                    <tr key={item.id}>
+                                        <td>{item.name}</td>
+                                        <td>{formatToIDR(item.price)}</td>
+                                        <td>{Number(item.quantity)}</td>
+                                        <td>{formatToIDR(item.price * Number(item.quantity))}</td>
+                                    </tr>
+                                ))}
+                                {/* <tr>
                                     <td>Hoodie Santai</td>
                                     <td>Rp120.000</td>
                                     <td>1</td>
                                     <td>Rp120.000</td>
-                                </tr>
+                                </tr> */}
                                 <tr>
                                     <td>Celana Chino</td>
                                     <td>Rp150.000</td>
