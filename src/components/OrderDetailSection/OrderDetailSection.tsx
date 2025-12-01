@@ -13,6 +13,7 @@ function OrderDetailSection() {
     const detailApi = useGrpcApi();
     const [apiResponse, setApiResponse] = useState<DetailOrderResponse | null>(null);
     const items = apiResponse?.items ?? []; //?memberikan default array utk menghilangkan undifinednya
+    const totalPrice = apiResponse?.total ?? 0;
 
     const fetchData = async () => {
         const res = await detailApi.callApi(getOrderClient().detailOrder({ id: id ?? "" }));
@@ -98,11 +99,11 @@ function OrderDetailSection() {
                                 </tr>
                                 <tr>
                                     <td colSpan={3} className="text-end"><strong>Subtotal</strong></td>
-                                    <td>Rp420.000</td>
+                                    <td>{formatToIDR(totalPrice)}</td>
                                 </tr>
                                 <tr>
                                     <td colSpan={3} className="text-end"><strong>Total</strong></td>
-                                    <td><strong>Rp420.000</strong></td>
+                                    <td><strong>{formatToIDR(totalPrice)}</strong></td>
                                 </tr>
                             </tbody>
                         </table>
