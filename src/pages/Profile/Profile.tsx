@@ -80,7 +80,7 @@ function Profile() {
                                 </Link>
                                 <Link
                                     to="/profile/orders"
-                                    className={`nav-link ${location.pathname === '/profile/orders' ? 'active' : ''}`}
+                                    className={`nav-link ${location.pathname.includes('/profile/orders')  ? 'active' : ''}`}
                                 >
                                     Riwayat Pesanan
                                 </Link>
