@@ -14,6 +14,7 @@ function OrderDetailSection() {
     const [apiResponse, setApiResponse] = useState<DetailOrderResponse | null>(null);
     const items = apiResponse?.items ?? []; //?memberikan default array utk menghilangkan undifinednya
     const totalPrice = apiResponse?.total ?? 0;
+    const orderStatusCode = apiResponse?.orderStatusCode ?? "";
 
     const fetchData = async () => {
         const res = await detailApi.callApi(getOrderClient().detailOrder({ id: id ?? "" }));
@@ -47,8 +48,8 @@ function OrderDetailSection() {
                     <h3 className="h5 mb-3">Status Pesanan</h3>
                     <div className="p-3 border rounded">
                         <p className="mb-2"><strong>Status Saat Ini:</strong>
-                            <OrderStatusBadge code={apiResponse?.orderStatusCode ?? ""} />
-                            {apiResponse?.orderStatusCode === ORDER_STATUS_UNPAID &&
+                            <OrderStatusBadge code={orderStatusCode ?? ""} />
+                            {orderStatusCode === ORDER_STATUS_UNPAID &&
                                 <a href={apiResponse?.xenditInvoiceUrl ?? ""}>(Bayar)</a>}
                         </p>
                         <p className="mb-2"><strong>Tanggal Pesanan:</strong> {convertTimestampToDate(apiResponse?.createdAt)}</p>
