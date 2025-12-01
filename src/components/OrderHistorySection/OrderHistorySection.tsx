@@ -8,6 +8,7 @@ import SortableHeader from "../SortableHeader/SortableHeader";
 import useSortableHeader from "../../hooks/useSortableHeader";
 import OrderStatusBadge from "../OrderStatusBadge/OrderStatusBadge";
 import { Link } from "react-router-dom";
+import { ORDER_STATUS_UNPAID } from "../../constants/order";
 
 interface OrderItem {
     id: string;
@@ -20,6 +21,7 @@ interface OrderItem {
         name: string;
         quantity: number;
     }[];
+    invoiceUrl: string;
 }
 
 function OrderHistorySection() {
@@ -57,6 +59,7 @@ function OrderHistorySection() {
                     name: product.name,
                     quantity: Number(product.quantity),
                 })),
+                invoiceUrl: item.xenditInvoiceUrl,
             })));
             setTotalPages(res.response.pagination?.totalItemCount ?? 0);
 
@@ -105,7 +108,7 @@ function OrderHistorySection() {
                                         <div key={product.id}>{product.name} x {product.quantity}</div>
                                     ))}
                                 </td>
-                                <td>{formatToIDR(item.total)}</td>
+                                <td>{formatToIDR(item.total)} {item.statusCode === ORDER_STATUS_UNPAID && <a href={item.invoiceUrl}>(Bayar)</a>}</td>
                                 <td><OrderStatusBadge code={item.statusCode} /></td>
                             </tr>
                         ))}
