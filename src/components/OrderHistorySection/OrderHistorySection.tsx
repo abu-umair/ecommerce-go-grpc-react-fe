@@ -7,6 +7,7 @@ import { formatToIDR } from "../../utils/number";
 import SortableHeader from "../SortableHeader/SortableHeader";
 import useSortableHeader from "../../hooks/useSortableHeader";
 import OrderStatusBadge from "../OrderStatusBadge/OrderStatusBadge";
+import { Link } from "react-router-dom";
 
 interface OrderItem {
     id: string;
@@ -97,7 +98,7 @@ function OrderHistorySection() {
                     <tbody>
                         {items.map(item => (
                             <tr key={item.id}>
-                                <td>{item.number}</td>
+                                <td><Link to={`/profile/orders/${item.id}/detail`}>{item.number}</Link> </td>
                                 <td>{item.date}</td>
                                 <td>
                                     {item.products.map(product => (
