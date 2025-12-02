@@ -30,7 +30,7 @@ function AdminOrderListSection() {
     const { handleSort, sortConfig } = useSortableHeader();
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState<number>(0);
-    
+
     const handlePageChange = (page: number) => {
         setCurrentPage(page);
     };
@@ -41,7 +41,7 @@ function AdminOrderListSection() {
                 pagination: {
                     currentPage: currentPage,
                     itemPerPage: 5,
-                    sort: sortConfig.direction ? {
+                    sort: sortConfig.direction ? { //?penambahan bagian ini
                         direction: sortConfig.direction,
                         field: sortConfig.key
                     } : undefined,
@@ -65,7 +65,7 @@ function AdminOrderListSection() {
         }
 
         fetchData();
-    }, [currentPage]);
+    }, [currentPage, sortConfig.direction, sortConfig.key]);
 
     return (
         <div>
@@ -76,7 +76,12 @@ function AdminOrderListSection() {
                 <table className="table site-blocks-table">
                     <thead>
                         <tr>
-                            <th>Nomor Order</th>
+                            <SortableHeader
+                                label="Nomor Order"
+                                sortKey="number"
+                                currentSort={sortConfig}
+                                onSort={handleSort}
+                            />
                             <SortableHeader
                                 label="Pelanggan"
                                 sortKey="customer"
@@ -90,15 +95,10 @@ function AdminOrderListSection() {
                                 onSort={handleSort}
                             />
                             <th>Item</th>
-                            <SortableHeader
-                                label="Status"
-                                sortKey="status"
-                                currentSort={sortConfig}
-                                onSort={handleSort}
-                            />
+                            <th>Status</th>
                             <SortableHeader
                                 label="Tanggal"
-                                sortKey="date"
+                                sortKey="created_at"
                                 currentSort={sortConfig}
                                 onSort={handleSort}
                             />
