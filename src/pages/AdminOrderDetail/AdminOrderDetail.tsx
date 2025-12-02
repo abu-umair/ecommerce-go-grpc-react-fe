@@ -6,11 +6,13 @@ import { DetailOrderResponse } from "../../../pb/order/order";
 import OrderStatusBadge from "../../components/OrderStatusBadge/OrderStatusBadge";
 import { convertTimestampToDate } from "../../utils/date";
 import { formatToIDR } from "../../utils/number";
+import { ORDER_STATUS_CANCELLED, ORDER_STATUS_DONE, ORDER_STATUS_PAID, ORDER_STATUS_SHIPPED, ORDER_STATUS_UNPAID } from "../../constants/order";
 
 function AdminOrderDetail() {
     const { id } = useParams();
     const detailApi = useGrpcApi();
     const [apiResponse, setApiResponse] = useState<DetailOrderResponse | null>(null);
+    const [newOrderStatus, setNewOrderStatus] = useState<string>('');
     const items = apiResponse?.items ?? [];
     const totalPrice = apiResponse?.total ?? 0;
     const orderStatusCode = apiResponse?.orderStatusCode ?? "";
@@ -60,15 +62,21 @@ function AdminOrderDetail() {
                                 <p className="mb-2"><strong>Tanggal Pesanan:</strong>
                                     {convertTimestampToDate(apiResponse?.createdAt)}
                                 </p>
-                                <div className="mt-3">
-                                    <select className="form-select mb-2">
-                                        <option value="pending">Menunggu</option>
-                                        <option value="processing">Diproses</option>
-                                        <option value="shipped">Dikirim</option>
-                                        <option value="delivered">Diterima</option>
-                                    </select>
-                                    <button className="btn btn-primary w-100">Perbarui Status</button>
-                                </div>
+                                {[ORDER_STATUS_UNPAID, ORDER_STATUS_PAID, ORDER_STATUS_SHIPPED].includes(orderStatusCode) && //?untuk menampilkan tombol perbarui status hanya jika status pesanan belum selesai
+                                    <div className="mt-3">
+                                        <select className="form-select mb-2"
+                                            onChange={(e) => setNewOrderStatus(e.target.value)}
+                                            value={newOrderStatus}
+                                        >
+                                            <option value="">-</option>
+                                            {orderStatusCode === ORDER_STATUS_UNPAID && <option value={ORDER_STATUS_PAID}>Sudah Dibayar</option>}
+                                            {orderStatusCode === ORDER_STATUS_UNPAID && <option value={ORDER_STATUS_CANCELLED}>Dibatalkan</option>}
+                                            {orderStatusCode === ORDER_STATUS_PAID && <option value={ORDER_STATUS_SHIPPED}>Sedang Dikirim</option>}
+                                            {orderStatusCode === ORDER_STATUS_SHIPPED && <option value={ORDER_STATUS_DONE}>Selesai</option>}
+                                        </select>
+                                        <button className="btn btn-primary w-100">Perbarui Status</button>
+                                    </div>
+                                }
                             </div>
                         </div>
 
