@@ -1,10 +1,32 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import useSortableHeader from '../../hooks/useSortableHeader';
 import SortableHeader from '../SortableHeader/SortableHeader';
 import Pagination from '../Pagination/Pagination';
+import { getOrderClient } from '../../api/grpc/client';
+import useGrpcApi from '../../hooks/useGrpcApi';
+import { convertTimestampToDate } from '../../utils/date';
+import { formatToIDR } from '../../utils/number';
+import OrderStatusBadge from '../OrderStatusBadge/OrderStatusBadge';
+
+
+interface OrderItem { //?array yang hampir sama dengan OrderHistorySection, tapi ada tambahan customer
+    id: string;
+    number: string;
+    date: string;
+    customer: string;//?tambahan
+    total: number;
+    statusCode: string;
+    products: {
+        id: string;
+        name: string;
+        quantity: number;
+    }[];
+}
 
 function AdminOrderListSection() {
+    const listApi = useGrpcApi();
+    const [items, setItems] = useState<OrderItem[]>([]);
     const { handleSort, sortConfig } = useSortableHeader();
     const [currentPage, setCurrentPage] = useState(1);
     const totalPages = 5;
@@ -12,6 +34,37 @@ function AdminOrderListSection() {
     const handlePageChange = (page: number) => {
         setCurrentPage(page);
     };
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const res = await listApi.callApi(getOrderClient().listOrderAdmin({
+                pagination: {
+                    currentPage: currentPage,
+                    itemPerPage: 5,
+                    sort: sortConfig.direction ? {
+                        direction: sortConfig.direction,
+                        field: sortConfig.key
+                    } : undefined,
+                }
+            }));
+
+            setItems(res.response.items.map(item => ({
+                customer: item.customer,
+                date: convertTimestampToDate(item.createdAt) ?? "",
+                id: item.id,
+                number: item.number,
+                statusCode: item.statusCode,
+                total: item.total,
+                products: item.products.map(product => ({
+                    id: product.id,
+                    name: product.name,
+                    quantity: Number(product.quantity),
+                }))
+            })));
+        }
+
+        fetchData();
+    }, [currentPage]);
 
     return (
         <div>
@@ -48,31 +101,25 @@ function AdminOrderListSection() {
                                 currentSort={sortConfig}
                                 onSort={handleSort}
                             />
-                            <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>#ORD-2025000001</td>
-                            <td>Sari</td>
-                            <td>Rp150.000</td>
-                            <td>
-                                <div>Produk 1 x 1</div>
-                                <div>Produk 2 x 1</div>
-                            </td>
-                            <td>
-                                <span className="badge bg-warning">Diproses</span>
-                            </td>
-                            <td>15 Jan 2025</td>
-                            <td>
-                                {/* TODO: add order link */}
-                                <Link to="/admin/order">
-                                    <button className="btn">
-                                        Lihat Detail
-                                    </button>
-                                </Link>
-                            </td>
-                        </tr>
+                        {items.map(item => (
+                            <tr key={item.id}>
+                                <td><Link to={`/admin/orders/${item.id}/detail`}>{item.number}</Link></td>
+                                <td>{item.customer}</td>
+                                <td>{formatToIDR(item.total)}</td>
+                                <td>
+                                    {item.products.map(product => (
+                                        <div key={product.id}>{product.name} x{product.quantity}</div>
+                                    ))}
+                                </td>
+                                <td>
+                                    <OrderStatusBadge code={item.statusCode} />
+                                </td>
+                                <td>{item.date}</td>
+                            </tr>
+                        ))}
                     </tbody>
                 </table>
             </div>
