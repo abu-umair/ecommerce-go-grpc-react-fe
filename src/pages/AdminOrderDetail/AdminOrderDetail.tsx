@@ -7,10 +7,12 @@ import OrderStatusBadge from "../../components/OrderStatusBadge/OrderStatusBadge
 import { convertTimestampToDate } from "../../utils/date";
 import { formatToIDR } from "../../utils/number";
 import { ORDER_STATUS_CANCELLED, ORDER_STATUS_DONE, ORDER_STATUS_PAID, ORDER_STATUS_SHIPPED, ORDER_STATUS_UNPAID } from "../../constants/order";
+import Swal from "sweetalert2";
 
 function AdminOrderDetail() {
     const { id } = useParams();
     const detailApi = useGrpcApi();
+    const updateStatusApi = useGrpcApi();
     const [apiResponse, setApiResponse] = useState<DetailOrderResponse | null>(null);
     const [newOrderStatus, setNewOrderStatus] = useState<string>('');
     const items = apiResponse?.items ?? [];
@@ -28,6 +30,20 @@ function AdminOrderDetail() {
 
         fetchData();
     }, []);
+
+    const updateStatusHandler = async () => {
+        await updateStatusApi.callApi(getOrderClient().updateOrderStatus({
+            orderId: id ?? "",
+            newStatusCode: newOrderStatus,
+        }));
+
+        await Swal.fire({
+            icon: 'success',
+            title: 'Status Order Berhasil Diperbarui'
+        })
+
+        await fetchData();
+    }
 
     return (
         <div className="admin-dashboard py-5">
@@ -74,7 +90,11 @@ function AdminOrderDetail() {
                                             {orderStatusCode === ORDER_STATUS_PAID && <option value={ORDER_STATUS_SHIPPED}>Sedang Dikirim</option>}
                                             {orderStatusCode === ORDER_STATUS_SHIPPED && <option value={ORDER_STATUS_DONE}>Selesai</option>}
                                         </select>
-                                        <button className="btn btn-primary w-100">Perbarui Status</button>
+                                        <button className="btn btn-primary w-100"
+                                            onClick={updateStatusHandler}
+                                            disabled={!newOrderStatus || updateStatusApi.isLoading}
+                                        >
+                                            Perbarui Status</button>
                                     </div>
                                 }
                             </div>
