@@ -160,3 +160,7 @@ npx protoc --ts_out ./pb --proto_path ./proto order/order.proto
 
 ### Integrasi List Order Admin FE
 #### History Steps
+
+
+### Integrasi Detail Order Admin FE
+#### History Steps
