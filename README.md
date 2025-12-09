@@ -176,3 +176,7 @@ npx protoc --ts_out ./pb --proto_path ./proto order/order.proto
 ## E-Commerce Project - Newsletter
 ### Integrasi API Newsletter FE
 #### History Steps
+1  generate protonya yang mengarah ke folder pb
+```bash
+npx protoc --ts_out ./pb --proto_path ./proto newsletter/newsletter.proto
+```
