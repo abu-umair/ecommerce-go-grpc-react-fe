@@ -107,6 +107,8 @@ npx protoc --ts_out ./pb --proto_path ./proto common/pagination.proto
 ### Integrasi Highlight Produk FE
 #### History Steps
 
+
+## E-Commerce Project - Cart
 ### Integrasi API Tambah ke Cart FE
 #### History Steps
 1. Memindahkan file cart.proto dan pagination.proto dr BE
@@ -129,6 +131,7 @@ npx protoc --ts_out ./pb --proto_path ./proto cart/cart.proto
 #### History Steps
 
 
+## E-Commerce Project - Order
 ### Navigasi Halaman Checkout FE 
 #### History Steps
 
@@ -167,4 +170,9 @@ npx protoc --ts_out ./pb --proto_path ./proto order/order.proto
 
 
 ### Integrasi Update Status Order Admin FE
+#### History Steps
+
+
+## E-Commerce Project - Newsletter
+### Integrasi API Newsletter FE
 #### History Steps
