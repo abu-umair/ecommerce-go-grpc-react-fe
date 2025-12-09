@@ -3,6 +3,7 @@ import { AuthServiceClient, IAuthServiceClient } from "../../../pb/auth/auth.cli
 import { ProductServiceClient, IProductServiceClient } from "../../../pb/product/product.client";
 import { CartServiceClient, ICartServiceClient } from "../../../pb/cart/cart.client";
 import { OrderServiceClient, IOrderServiceClient } from "../../../pb/order/order.client";
+import { NewsletterServiceClient, INewsletterServiceClient } from "../../../pb/newsletter/newsletter.client";
 import { authInterceptor } from "./auth-interceptor";
 
 let webTransport: GrpcWebFetchTransport | null = null;
@@ -10,6 +11,7 @@ let authClient: IAuthServiceClient | null = null;
 let productClient: IProductServiceClient | null = null;
 let cartClient: ICartServiceClient | null = null;
 let orderClient: IOrderServiceClient | null = null;
+let newsletterClient: INewsletterServiceClient | null = null;
 
 
 const getWebTransport = () => {
@@ -40,7 +42,7 @@ export const getProductClient = () => {
 }
 
 export const getCartClient = () => {
-    if (cartClient  === null) {
+    if (cartClient === null) {
         cartClient = new CartServiceClient(getWebTransport());
     }
 
@@ -53,4 +55,12 @@ export const getOrderClient = () => {
     }
 
     return orderClient
+}
+
+export const getNewsletterClient = () => {
+    if (newsletterClient === null) {
+        newsletterClient = new NewsletterServiceClient(getWebTransport());
+    }
+
+    return newsletterClient
 }
